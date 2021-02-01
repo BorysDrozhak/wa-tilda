@@ -1,13 +1,36 @@
+import logging
 import re
-import sys
 
-while True:
-    print("Enter/Paste your content. Ctrl-D or Ctrl-Z ( windows ) to save it.")
-    try:
-        text = ''.join(sys.stdin.readlines())
-    except EOFError:
-        break
+from telegram.ext import (CommandHandler, Filters, MessageFilter,
+                          MessageHandler, Updater)
 
+b = "AAFiYwWlbJwvUhbwV"
+c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by regular people on windows man
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                     level=logging.INFO)
+a = "165506622"
+updater = Updater(token=a + "2" + ':' + b + c, use_context=True)
+dispatcher = updater.dispatcher
+
+
+def send_parsed_order(update, context):
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, text=parse_order(update.message.text)
+    )
+
+
+class FilterAwesome(MessageFilter):
+    def filter(self, message):
+        return 'Заказ #' in message.text
+filter_awesome = FilterAwesome()
+
+order_handler = MessageHandler(filter_awesome, send_parsed_order)
+dispatcher.add_handler(order_handler)
+
+updater.start_polling()
+
+
+def parse_order(text):
     # cleaning up before parsing the new input
     client_nocall, client_address = None, None
     client_name, client_phone = None, None
@@ -22,7 +45,6 @@ while True:
         .split("Дополнительные данные")[0]
     )
 
-    print('----')
     other = []
     for line in client_block.split("\n"):
         if not line:
@@ -91,6 +113,8 @@ while True:
             options = False
         elif "Розмір порції: Одинарні ( 1 шт в японській упаковці)" in options:
             name = name + " (Одинарна упаковка)"
+        elif "Розмір порції: XL СЕТ (3 шт в крафтовому боксі з авторським салатом)" in options:
+            name = name + " (XL СЕТ 3 шт)"
         result_order_block += amount + " x " + name + "\t - (" + total_price + " uah)" + "\n"
         if options:
             for option in options.split(","):
@@ -110,24 +134,24 @@ while True:
                     continue
                 result_order_block += "    " + option + "\n"
 
-    print('-' * 100)
-    print(client_nocall)
-    print(client_name, client_phone)
+    parsed_text = []
+    parsed_text += [client_nocall]
+    parsed_text += [client_name + " " + client_phone]
     if "Самовивiз" in delivery_zone:
-        print("Самовивіз!")
+        parsed_text += ["Самовивіз!"]
     else:
-        print(client_address)
-        print(delivery_zone)
-    print()
-    print(total_order_price, order_type)
-    print()
-    print(persons)
+        parsed_text += [client_address]
+        parsed_text += [delivery_zone]
+    parsed_text += [""]
+    parsed_text += [total_order_price + " " + order_type]
+    parsed_text += [""]
+    parsed_text += [persons]
     if client_comment:
-        print(client_comment)
+        parsed_text += [client_comment]
     if client_no_need:
-        print(client_no_need)
-    print(other)
-    print('----')
-    print(result_order_block)
-    print('-' * 50)
-    print('-' * 50)
+        parsed_text += [client_no_need]
+    parsed_text += [other]
+    parsed_text += ['----']
+    parsed_text += [result_order_block]
+
+    return '\n'.join(parsed_text)
