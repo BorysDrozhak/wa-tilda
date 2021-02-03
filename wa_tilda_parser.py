@@ -4,6 +4,44 @@ import re
 from telegram.ext import (CommandHandler, Filters, MessageFilter,
                           MessageHandler, Updater)
 
+# якщо треба щоб щось не показувало - то додай це сюди (повною стрічкою)
+ignore_options = [
+                    "Бажаєте більше тунця (+30г)?: Ні",
+                    "Хотілось би більше рису (100г)?: Ні",
+                    "Пікантне?: Так",
+                    "Посипати кунжутом?: Так",
+                    "Бажаєте більше лосося (+30 г) ?: Ні",
+                    "Безлактозний йогурт?: Ні",
+                    "Більше перепелиних яєць (+2 шт)?: Ні",
+                    "Розмір порції: Одинарні ( 1 шт в японській упаковці)",
+                    "Поливати горіховим соусом?: Так",
+                    "Бажаєте більше курячого філе (+70г)?: Ні",
+                    "Потрібні імбир та васабі?: Так",
+                    "Потрібні імбир та васабі до онігірі?: Так",
+                    "Бажаєте додати до боулу броколі(30г) чи більше лосося(30г)?: Ні",
+                    "дякую",
+                    "Розмір порції: Standard",
+                    "Розмір порції: XS (protein balanced)",
+                    "Любиш соєвий соус до гречки?: Ні",
+                    "Любиш імбир та васабі до гречки?: Ні",
+    ]
+
+# якщо хочеш переімінувати опцію на лєту - використовуй цей лист
+substitute_list = [
+    (
+        "Бажаєте більше лосося(30г) чи броколі(30г)?: Лосось і броколі",
+        "+ Лосось(30г) + Броколі(30г)"
+        ),
+    ('Бажаєте більше тунця (+30г)?: Так', "+ Тунця (+30г)"),
+    ("Потрібні імбир та васабі?: Ні", "- Не потрібен: Імбир та васабі"),
+    (
+        "Бажаєте додати до боулу броколі(30г) чи більше лосося(30г)?: Лосось і броколі",
+        "+ Лосось(30г) + Броколі(30г)"
+    ),
+    ("Бажаєте більше курячого філе (+70г)?: Так", "+ Курячого філе (+70г)"),
+]
+
+
 b = "AAFiYwWlbJwvUhbwV"
 c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by regular people on windows man
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -126,7 +164,7 @@ def parse_order(text):
             options = ''
 
         if name == 'Моті':
-            name = name + " " + options.split(": ")[1]
+            name = options.split(": ")[1] + " " + name
             options = False
         elif "Розмір порції: Одинарні ( 1 шт в японській упаковці)" in options:
             name = name + " (Одинарна упаковка)"
@@ -137,24 +175,18 @@ def parse_order(text):
         result_order_block += amount + " x " + name + "\t - (" + total_price + " uah)" + "\n"
         if options:
             for option in options.split(","):
-                if option.strip() in [
-                    "Бажаєте більше тунця (+30г)?: Ні",
-                    "Хотілось би більше рису (100г)?: Ні",
-                    "Пікантне?: Так",
-                    "Посипати кунжутом?: Так",
-                    "Бажаєте більше лосося (+30 г) ?: Ні",
-                    "Безлактозний йогурт?: Ні",
-                    "Більше перепелиних яєць (+2 шт)?: Ні",
-                    "Розмір порції: Одинарні ( 1 шт в японській упаковці)",
-                    "Поливати горіховим соусом?: Так",
-                    "Бажаєте більше курячого філе (+70г)?: Ні",
-                    "Потрібні імбир та васабі?: Так",
-                    "Бажаєте додати до боулу броколі(30г) чи більше лосося(30г)?: Ні",
-                    "дякую",
-                    "Розмір порції: Standard",
-                    "Розмір порції: XS (protein balanced)",
-                ]:
+                if option.strip() in ignore_options:
                     continue
+                elif 'Оберіть Лассі: Індійське Лассі "Манго" безлактозне' in option.strip():
+                    option = option.split(":")[1]
+                elif 'Оберіть Сет Онігірь: Green Juicy Salmon' in option.strip():
+                    option = option.split(":")[1]
+                elif 'Бажаєте додати до боулу броколі(30г) чи більше лосося(30г)?: Лосось (+30г)' in option.strip():
+                    option = option.split(":")[1]
+
+                for item in substitute_list:
+                    if item[0] == option.strip():
+                        option = item[1]
                 result_order_block += "    " + option + "\n"
 
     parsed_text = []
@@ -166,7 +198,7 @@ def parse_order(text):
         parsed_text += [client_address]
         parsed_text += [delivery_zone]
     parsed_text += [""]
-    parsed_text += [total_order_price + " " + order_type]
+    parsed_text += [total_order_price + "  (" + order_type + ")"]
     parsed_text += [""]
     parsed_text += [persons]
     if client_comment:
@@ -180,5 +212,5 @@ def parse_order(text):
         parsed_text += ['----', utm]
 
     return '\n'.join(
-        [i for i in parsed_text if i]
+        [''.join(i) for i in parsed_text if i]
     )
