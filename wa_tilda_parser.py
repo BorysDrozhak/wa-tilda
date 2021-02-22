@@ -1,5 +1,6 @@
 import logging
 import re
+import time
 
 from telegram.ext import (CommandHandler, Filters, MessageFilter,
                           MessageHandler, Updater)
@@ -24,6 +25,7 @@ ignore_options = [
                     "Розмір порції: XS (protein balanced)",
                     "Любиш соєвий соус до гречки?: Ні",
                     "Любиш імбир та васабі до гречки?: Ні",
+                    "Бажаєте більше лосося(30г) чи броколі(30г)?: Ні",
     ]
 
 # якщо хочеш переімінувати опцію на лєту - використовуй цей лист
@@ -73,8 +75,9 @@ echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
 dispatcher.add_handler(echo_handler)
 
 
-
-
+# end loop of polling stopping and again.
+# It seems that way I can read other bots messages in groups
+# which is impossible other way
 updater.start_polling()
 
 
@@ -187,12 +190,12 @@ def parse_order(text):
                 for item in substitute_list:
                     if item[0] == option.strip():
                         option = item[1]
-                result_order_block += "    " + option + "\n"
+                result_order_block += "     " + option + "\n"
 
     parsed_text = []
     parsed_text += [client_nocall]
     parsed_text += [client_name + " " + client_phone]
-    if "Самовивiз" in delivery_zone:
+    if delivery_zone and "Самовивiз" in delivery_zone:
         parsed_text += ["Самовивіз!"]
     else:
         parsed_text += [client_address]
