@@ -56,7 +56,7 @@ dispatcher = updater.dispatcher
 
 
 def send_parsed_order(update, context):
-    print("chart_id: " + update.effective_chat.id)
+    print("chart_id: " + str(update.effective_chat.id))
     text = parse_order(update.message.text)
     context.bot.send_message(
         chat_id=update.effective_chat.id,
