@@ -56,12 +56,20 @@ dispatcher = updater.dispatcher
 
 
 def send_parsed_order(update, context):
-    print("chart_id: " + str(update.effective_chat.id))
+    chat_id = update.effective_chat.id
+    print("chart_id: " + str(chat_id))
     text = parse_order(update.message.text)
+    if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
+        context.bot.send_message(
+            chat_id=-1001353838635,
+            text=text,
+            # parse_mode='HTML'
+        )
+
     context.bot.send_message(
-        chat_id=update.effective_chat.id,
+        chat_id=chat_id,
         text=text,
-        pars_mode='HTML'
+        # parse_mode='HTML'
     )
 
 class FilterAwesome(MessageFilter):
@@ -203,14 +211,14 @@ def parse_order(text):
     if delivery_zone and "Самовивiз" in delivery_zone:
         parsed_text += ["Самовивіз!"]
     else:
-        client_address_fmt = client_address.replace(" ", "+")
+        client_address_fmt = client_address.replace(" ", "+").replace('/', '+')
         url = (
             f"https://www.google.com/maps/dir/Kniazia+Romana+St,+7,+Lviv,+Lviv+Oblast/"
             f"{client_address_fmt}"
             "+L'viv,+L'vivs'ka+oblast,+79000"
         )
-        # parsed_text += [client_address + "\n" + url]
-        parsed_text += ["<a href=" + url + ">" + client_address + " </a>"]
+        parsed_text += [client_address + "\n" + url]
+        # parsed_text += ["<a href=" + url + ">" + client_address + " </a>"]
         parsed_text += [delivery_zone]
     parsed_text += [""]
     parsed_text += [total_order_price + "  (" + order_type + ")"]
