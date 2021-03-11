@@ -211,7 +211,13 @@ def parse_order(text):
     if delivery_zone and "Самовивiз" in delivery_zone:
         parsed_text += ["Самовивіз!"]
     else:
-        client_address_fmt = client_address.replace(" ", "+").replace('/', '+')
+        client_address_fmt = (
+            client_address
+            .replace(" ", "+")
+            .replace('/', '+')
+            .replace("'", '+')
+            .replace("‘", '')
+        )
         url = (
             f"https://www.google.com/maps/dir/Kniazia+Romana+St,+7,+Lviv,+Lviv+Oblast/"
             f"{client_address_fmt}"
@@ -231,6 +237,7 @@ def parse_order(text):
     parsed_text += [other]
     parsed_text += ['----']
     parsed_text += [result_order_block]
+    parsed_text += [total_order_price + "  (" + order_type + ")"]
     if utm:
         parsed_text += ['----', utm]
 
