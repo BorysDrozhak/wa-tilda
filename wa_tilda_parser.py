@@ -239,6 +239,7 @@ def parse_order(text):
             .replace('/', '+')
             .replace("'", '+')
             .replace("‘", '')
+            .replace("’", '')
         )
         url = (
             f"https://www.google.com/maps/dir/Kniazia+Romana+St,+7,+Lviv,+Lviv+Oblast/"
