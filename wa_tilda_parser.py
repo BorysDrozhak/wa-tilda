@@ -225,9 +225,9 @@ def parse_order(text):
     parsed_text += ['----']
     parsed_text += [result_order_block]
     if "LiqPay" in order_type:
-        parsed_text += ["Разом: " + total_order_price + "  (Оплачено)"]
+        parsed_text += ["Разом: " + total_order_price + "  (Оплачено)", ""]
     else:
-        parsed_text += ["Разом: " + total_order_price + "  (" + order_type + ")"]
+        parsed_text += ["Разом: " + total_order_price + "  (" + order_type + ")", ""]
     if utm:
         parsed_text += ['----', utm]
     if delivery_zone and "Самовивiз" in delivery_zone:
@@ -240,6 +240,7 @@ def parse_order(text):
             .replace("'", '+')
             .replace("‘", '')
             .replace("’", '')
+            .replace('"', '')
         )
         url = (
             f"https://www.google.com/maps/dir/Kniazia+Romana+St,+7,+Lviv,+Lviv+Oblast/"
