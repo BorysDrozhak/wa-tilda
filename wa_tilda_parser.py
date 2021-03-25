@@ -58,7 +58,10 @@ dispatcher = updater.dispatcher
 def send_parsed_order(update, context):
     chat_id = update.effective_chat.id
     print("chart_id: " + str(chat_id))
-    text = parse_order(update.message.text)
+    try:
+        text = parse_order(update.message.text)
+    except Exception as e:
+        text = e
     if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
         context.bot.send_message(
             chat_id=-1001353838635,
@@ -66,6 +69,8 @@ def send_parsed_order(update, context):
             # parse_mode='HTML'
         )
 
+    # removing https links when sending them to main chat
+    text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
     context.bot.send_message(
         chat_id=chat_id,
         text=text,
