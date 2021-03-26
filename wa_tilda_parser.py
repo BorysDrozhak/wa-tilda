@@ -2,6 +2,7 @@ import getpass
 import logging
 import re
 import time
+import traceback
 
 from telegram.ext import (CommandHandler, Filters, MessageFilter,
                           MessageHandler, Updater)
@@ -66,28 +67,33 @@ dispatcher = updater.dispatcher
 def send_parsed_order(update, context):
     chat_id = update.effective_chat.id
     print("chart_id: " + str(chat_id))
+    err = ''
     try:
         text = parse_order(update.message.text)
     except Exception as e:
-        text = e
+        err = e
+        text = str(traceback.format_exc())
+        text = text + '\n\n Borys will have a look ;)'
     if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
         context.bot.send_message(
             chat_id=-1001353838635,
-            text=str(text),
+            text=text,
             # parse_mode='HTML'
         )
 
-    if isinstance(text, str):
+    if err != '':
         # removing https links when sending them to main chat
         text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
     else:
         # if error happen, make it string and send it
-        text = str(text)
+        text = text
     context.bot.send_message(
         chat_id=chat_id,
         text=text,
         # parse_mode='HTML'
     )
+    if err:
+        raise err
 
 class FilterAwesome(MessageFilter):
     def filter(self, message):
@@ -135,11 +141,19 @@ def parse_order(text):
     )
 
     other = []
+    no_need_bool = False
     for line in client_block.split("\n"):
         if not line:
             continue
         param = line.split(":")[0]
-        info = line.split(":")[1][1:]
+        print(line)
+        print(client_comment, len(line.split(":")))
+        if client_comment and len(line.split(":")) < 2 and no_need_bool is False:
+            # in case comment is on a next line, add it to the comment, until next param happen
+            client_comment = client_comment + '\n' + line
+            continue
+
+        info = line.split(":")[1].lstrip()
         if param == 'Name':
             client_name = info
         elif param == 'Address':
@@ -154,9 +168,10 @@ def parse_order(text):
             )
         elif param == 'не_треба':
             client_no_need = info
+            no_need_bool = True
         elif param == 'Persons':
             persons = "Для: " + info
-        elif param == 'Комент:':
+        elif param == 'Комент:' or param == 'Comment':
             client_comment = "Comment: " + info
         elif param == 'НЕдзвонити-НАПИСАТИ':
             if info == 'yes':
