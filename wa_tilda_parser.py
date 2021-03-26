@@ -1,3 +1,4 @@
+import getpass
 import logging
 import re
 import time
@@ -45,11 +46,18 @@ substitute_list = [
 
 
 b = "AAFiYwWlbJwvUhbwV"
-c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by regular people on windows man
+c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by mere people on windows man
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
 a = "165506622"
 tok = a + "2" + ':' + b + c
+
+d = "1700108054:A"
+f = "AFsN_Agk1G5eyh19Dxqdn_jrPmuW60Zy5"
+b_bot = d + f + "4"
+
+if getpass.getuser() == "bdrozhak":
+    tok = b_bot
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -69,8 +77,12 @@ def send_parsed_order(update, context):
             # parse_mode='HTML'
         )
 
-    # removing https links when sending them to main chat
-    text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+    if isinstance(text, str):
+        # removing https links when sending them to main chat
+        text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+    else:
+        # if error happen, make it string and send it
+        text = str(text)
     context.bot.send_message(
         chat_id=chat_id,
         text=text,
@@ -238,11 +250,6 @@ def parse_order(text):
     if delivery_zone and "Самовивiз" in delivery_zone:
         pass
     else:
-        # забрати зайву інфу від адреси
-        client_address_fmt = client_address_fmt.split(',')[0]
-        client_address_fmt = client_address_fmt.split('під')[0]
-        client_address_fmt = client_address_fmt.split('буд')[0]
-        client_address_fmt = client_address_fmt.split('кв')[0]
         # форматнути щоб url працювало
         client_address_fmt = (
             client_address
@@ -253,6 +260,11 @@ def parse_order(text):
             .replace("’", '')
             .replace('"', '')
         )
+        # забрати зайву інфу від адреси
+        client_address_fmt = client_address_fmt.split(',')[0]
+        client_address_fmt = client_address_fmt.split('під')[0]
+        client_address_fmt = client_address_fmt.split('буд')[0]
+        client_address_fmt = client_address_fmt.split('кв')[0]
 
         url = (
             f"https://www.google.com/maps/dir/Kniazia+Romana+St,+7,+Lviv,+Lviv+Oblast/"
