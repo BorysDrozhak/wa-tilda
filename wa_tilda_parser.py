@@ -73,7 +73,7 @@ def send_parsed_order(update, context):
     if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
         context.bot.send_message(
             chat_id=-1001353838635,
-            text=text,
+            text=str(text),
             # parse_mode='HTML'
         )
 
