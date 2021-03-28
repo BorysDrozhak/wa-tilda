@@ -82,11 +82,12 @@ def send_parsed_order(update, context):
         )
 
     if err != '':
-        # removing https links when sending them to main chat
-        text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
-    else:
         # if error happen, make it string and send it
         text = text
+    else:
+        # removing https links when sending them to main chat
+        text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+
     context.bot.send_message(
         chat_id=chat_id,
         text=text,
@@ -119,7 +120,7 @@ updater.start_polling()
 
 def parse_order(text):
     # cleaning up before parsing the new input
-    client_nocall, client_address = None, None
+    client_nocall, client_address = None, ''
     client_name, client_phone = None, None
     delivery_zone, total_order_price, order_type = None, None, None
     client_comment, persons, client_no_need = None, None, None
@@ -156,7 +157,8 @@ def parse_order(text):
         info = line.split(":")[1].lstrip()
         if param == 'Name':
             client_name = info
-        elif param == 'Address':
+        elif param == 'Address' or param == "Адрес доставки":
+            from ipdb import set_trace; from pprint import pprint as pp; set_trace(context=6)
             client_address = info
         elif param == 'Phone':
             client_phone = (
