@@ -215,9 +215,6 @@ def parse_order(text):
         if name == 'Моті':
             name = options.split(": ")[1] + " " + name
             options = False
-        elif "Онігірі x1 " in name:
-            name = options[0].split("Начинка: ")[1] + "(" + name + ")"
-            options = None
         elif "Розмір порції: Одинарні ( 1 шт в японській упаковці)" in options:
             name = name + " (Одинарна упаковка)"
         elif "Розмір порції: XL СЕТ (3 шт в крафтовому боксі з авторським салатом)" in options:
