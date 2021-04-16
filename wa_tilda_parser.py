@@ -101,12 +101,44 @@ def send_parsed_order(update, context):
     if err:
         raise err
 
-class FilterAwesome(MessageFilter):
+def send_parse_rocket(update, context):
+    chat_id = update.effective_chat.id
+    print("chart_id: " + str(chat_id))
+    err = ''
+    try:
+        text = parse_rocket(update.message.text)
+    except Exception as e:
+        err = e
+        text = str(traceback.format_exc())
+        text = text + '\n\n Borys will have a look ;)'
+    if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
+        context.bot.send_message(
+            chat_id=-1001353838635,
+            text=text,
+            # parse_mode='HTML'
+        )
+
+    context.bot.send_message(
+        chat_id=chat_id,
+        text=text,
+        # parse_mode='HTML'
+    )
+    if err:
+        raise err
+
+
+class FilterOrder(MessageFilter):
     def filter(self, message):
         return 'Заказ #' in message.text
-filter_awesome = FilterAwesome()
+filter_order = FilterOrder()
 
-order_handler = MessageHandler(filter_awesome, send_parsed_order)
+class FilterRocket(MessageFilter):
+    def filter(self, message):
+        return '№' in message.text
+filter_rocket = FilterRocket()
+
+order_handler = MessageHandler(filter_order, send_parsed_order)
+order_handler = MessageHandler(filter_rocket, send_parse_rocket)
 dispatcher.add_handler(order_handler)
 
 # just logging messages recieved
@@ -122,6 +154,25 @@ dispatcher.add_handler(echo_handler)
 # which is impossible other way
 updater.start_polling()
 
+
+def parse_rocket(text):
+    l = []
+    for i in text.split("\n"):
+        if "№" in i:
+            l.append({"price": 0, "type": ""})
+        elif "UAH" in i:
+            l[-1]["price"] = float(i.split(" ")[0])
+        elif "money" in i or "credit_card" in i:
+            l[-1]["type"] = i
+
+    total = {"cash": 0, "credit_card": 0}
+    for i in l:
+        if i["type"] == "credit_card":
+            total["credit_card"] += i["price"]
+        elif i["type"] == "money":
+            total["cash"] += i["price"]
+
+    return f'Кеш: {total["cash"]}\nБезнал: {total["credit_card"]}'
 
 def parse_order(text):
     # cleaning up before parsing the new input
