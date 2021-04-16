@@ -138,8 +138,9 @@ class FilterRocket(MessageFilter):
 filter_rocket = FilterRocket()
 
 order_handler = MessageHandler(filter_order, send_parsed_order)
-order_handler = MessageHandler(filter_rocket, send_parse_rocket)
+rocket_handler = MessageHandler(filter_rocket, send_parse_rocket)
 dispatcher.add_handler(order_handler)
+dispatcher.add_handler(rocket_handler)
 
 # just logging messages recieved
 def echo(update, context):
