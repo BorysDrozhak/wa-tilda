@@ -28,6 +28,8 @@ ignore_options = [
                     "Любиш соєвий соус до гречки?: Ні",
                     "Любиш імбир та васабі до гречки?: Ні",
                     "Бажаєте більше лосося(30г) чи броколі(30г)?: Ні",
+                    "Ф'южн опціі: Standard",
+                    "Розмір порції: XL СЕТ (3 шт в крафтовому боксі з авторським салатом)",
     ]
 
 # якщо хочеш переімінувати опцію на лєту - використовуй цей лист
@@ -82,18 +84,17 @@ def send_parsed_order(update, context):
         text = str(traceback.format_exc())
         text = text + '\n\n Borys will have a look ;)'
     if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
+        text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
         context.bot.send_message(
             chat_id=-1001353838635,
             text=text,
-            # parse_mode='HTML'
         )
-
     if err != '':
         # if error happen, make it string and send it
         text = text
     else:
         # removing https links when sending them to main chat
-        text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+        pass
 
     context.bot.send_message(
         chat_id=chat_id,
@@ -102,6 +103,7 @@ def send_parsed_order(update, context):
     )
     if err:
         raise err
+
 
 def send_parse_rocket(update, context):
     chat_id = update.effective_chat.id
@@ -113,9 +115,9 @@ def send_parse_rocket(update, context):
         err = e
         text = str(traceback.format_exc())
         text = text + '\n\n Borys will have a look ;)'
-    if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
+    if str(chat_id) != "-447482461" and str(chat_id) != "84206430":
         context.bot.send_message(
-            chat_id=-1001353838635,
+            chat_id=-447482461,
             text=text,
             # parse_mode='HTML'
         )
@@ -175,7 +177,11 @@ def parse_rocket(text):
         elif i["type"] == "money":
             total["cash"] += i["price"]
 
+    total["cash"] = round(total["cash"], 2)
+    total["credit_card"] = round(total["credit_card"], 2)
+
     return f'Кеш: {total["cash"]}\nБезнал: {total["credit_card"]}'
+
 
 def parse_order(text):
     # cleaning up before parsing the new input
@@ -184,6 +190,7 @@ def parse_order(text):
     delivery_zone, total_order_price, order_type = None, None, None
     client_comment, persons, client_no_need = None, None, None
     result_order_block, other, utm = None, None, None
+    do_not_know_zones, self_delivery = False, False
 
     order_block = text.split("Данные плательщика:")[0]
     add_block = text.split("Дополнительные данные:")
@@ -235,13 +242,13 @@ def parse_order(text):
             client_comment = "Comment: " + info
         elif param == 'НЕдзвонити-НАПИСАТИ':
             if info == 'yes':
-                client_nocall = 'NO CALL\n'
+                client_nocall = 'NO CALL'
         else:
             other += line
     if not other:
         other = ''
     if not client_nocall:
-        client_nocall = 'Треба дзвонити клієнту!\n'
+        client_nocall = 'Треба дзвонити клієнту!'
 
     result_order_block = ''
     for line in order_block.split("\n"):
@@ -299,12 +306,19 @@ def parse_order(text):
 
     parsed_text = []
     parsed_text += [client_nocall]
-    parsed_text += [client_name + " " + client_phone]
-    if delivery_zone and "Самовивiз" in delivery_zone:
+    if delivery_zone and "Курʼєром не орієнтуюсь яка зона" in delivery_zone:
+        parsed_text += ["Не орієнтуються яка зона!"]
+        do_not_know_zones = True
+    elif delivery_zone and "Самовивiз" in delivery_zone:
         parsed_text += ["Самовивіз!"]
-    else:
-        # parsed_text += ["<a href=" + url + ">" + client_address + " </a>"]
+        self_delivery = True
+    parsed_text += ["\n"]
+    parsed_text += [client_name + " " + client_phone]
+    if not self_delivery and not do_not_know_zones:
         parsed_text += [client_address, delivery_zone]
+    elif not self_delivery:
+        parsed_text += [client_address]
+
     parsed_text += [""]
     parsed_text += [total_order_price + "  (" + order_type + ")"]
     parsed_text += [""]
@@ -322,7 +336,7 @@ def parse_order(text):
         parsed_text += ["Разом: " + total_order_price + "  (" + order_type + ")", ""]
     if utm:
         parsed_text += ['----', utm]
-    if delivery_zone and "Самовивiз" in delivery_zone:
+    if self_delivery:
         pass
     else:
         # форматнути щоб url працювало
