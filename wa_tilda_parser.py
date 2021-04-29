@@ -166,7 +166,7 @@ def parse_rocket(text):
         if "№" in i:
             l.append({"price": 0, "type": ""})
         elif "UAH" in i:
-            l[-1]["price"] = float(i.split(" ")[0])
+            l[-1]["price"] = float(i.split(" ")[0].replace(',', ''))
         elif "money" in i or "credit_card" in i:
             l[-1]["type"] = i
 
