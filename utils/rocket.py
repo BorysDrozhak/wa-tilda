@@ -1,4 +1,32 @@
+import datetime
+
+
 def parse_rocket(text):
+    return f"""
+
+Каса {datetime.date.today()}.
+
+Готівка
+    Доставка = 
+    Ресторан = 
+    Загально = 
+
+Термінал
+    Доставка = 
+    Ресторан = 
+    Загально = 
+    Z-звіт   =
+
+LiqPay доставки = 
+
+Rocket
+{parse_rocket_fmt(text)}
+
+Готівка в касі:
+"""
+
+
+def parse_rocket_fmt(text):
     # take copy past list from rocket app and convert to meaningful info
     if "№" not in text:
         return 'No Rocket orders passed'
@@ -23,4 +51,6 @@ def parse_rocket(text):
     total["credit_card"] = round(total["credit_card"], 2)
     total["total"] = total["credit_card"] + total["cash"]
 
-    return f'Кеш: {total["cash"]}\nБезнал: {total["credit_card"]}\nTotal: {total["total"]}'
+    return f'''    Кеш = {total["cash"]}
+    Безнал = {total["credit_card"]}
+    Total = {total["total"]}'''

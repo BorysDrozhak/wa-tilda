@@ -1,10 +1,8 @@
 from tests.unit.data.rocket_order_examples import example1
-from utils.rocket import parse_rocket
-
-
-def test_default():
-    assert parse_rocket('') == 'No Rocket orders passed'
+from utils.rocket import parse_rocket, parse_rocket_fmt
 
 
 def test_example1():
-    assert parse_rocket(example1) == 'Кеш: 805.7\nБезнал: 3755.4\nTotal: 4561.1'
+    assert parse_rocket_fmt(example1) == '''    Кеш = 805.7
+    Безнал = 3755.4
+    Total = 4561.1'''
