@@ -54,3 +54,40 @@ def parse_rocket_fmt(text):
     return f'''    Кеш = {total["cash"]}
     Безнал = {total["credit_card"]}
     Total = {total["total"]}'''
+
+
+def parse_total_kassa(text):
+    total = 0.0
+    terminal_passed = False
+    terminal_total = 0
+    z_zvit = 0
+    for line in text.split('\n'):
+        if "Каса 202" in line:
+            name = line
+        elif "Загально =" in line:
+            total += float(line.split('=')[1].strip())
+        elif "Total =" in line:
+            total += float(line.split('=')[1].strip())
+        elif "LiqPay доставки =" in line:
+            total += float(line.split('=')[1].strip())
+        if "Термінал" in line:
+            terminal_passed = True
+        if "Загально =" in line and terminal_passed is True:
+            terminal_passed = False
+            terminal_total = float(line.split('=')[1].strip())
+        if "Z-звіт" in line:
+            z_zvit = float(line.split('=')[1].strip())
+    delta = terminal_total - z_zvit
+    tips = 0
+    alarm = False
+    if delta < 0:
+        tips = delta * -1.0
+    elif delta > 0:
+        alarm = True
+
+    if tips != 0:
+        return f"{name.strip('.')}\n\nРазом: {total}\nчай: {tips}?"
+    elif alarm:
+        return f"{name.strip('.')}: {total}\n\n Не сходиться z-звіт з айко продажем на:{delta}"
+    else:
+        return f"{name.strip('.')}: {total}"
