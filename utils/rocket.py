@@ -49,7 +49,7 @@ def parse_rocket_fmt(text):
 
     total["cash"] = round(total["cash"], 2)
     total["credit_card"] = round(total["credit_card"], 2)
-    total["total"] = total["credit_card"] + total["cash"]
+    total["total"] = round(total["credit_card"] + total["cash"], 2)
 
     return f'''    Кеш = {total["cash"]}
     Безнал = {total["credit_card"]}
