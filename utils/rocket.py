@@ -65,18 +65,18 @@ def parse_total_kassa(text):
         if "Каса 202" in line:
             name = line
         elif "Загально =" in line:
-            total += float(line.split('=')[1].strip())
+            total += float(line.split('=')[1].strip().split(' ')[0])
         elif "Total =" in line:
-            total += float(line.split('=')[1].strip())
+            total += float(line.split('=')[1].strip().split(' ')[0])
         elif "LiqPay доставки =" in line:
-            total += float(line.split('=')[1].strip())
+            total += float(line.split('=')[1].strip().split(' ')[0])
         if "Термінал" in line:
             terminal_passed = True
         if "Загально =" in line and terminal_passed is True:
             terminal_passed = False
-            terminal_total = float(line.split('=')[1].strip())
+            terminal_total = float(line.split('=')[1].strip().split(' ')[0])
         if "Z-звіт" in line:
-            z_zvit = float(line.split('=')[1].strip())
+            z_zvit = float(line.split('=')[1].strip().split(' ')[0])
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
