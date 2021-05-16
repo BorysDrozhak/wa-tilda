@@ -194,6 +194,13 @@ def parse_order(text):
     else:
         client_no_need += '\n'
 
+    # smart parsing
+    # extra = ""
+    if "0682582930" in client_phone or "0982454975" in client_phone:
+        if 'кульпарків' in client_address or 'Кульпарк' in client_address:
+            client_address = "Кульпарківська 226Б (Місто Трав), Перший домофон 3#36, другий ліворуч 36, другий поверх"
+
+
     parsed_text = f"""{client_nocall}
 {address_note}
 
