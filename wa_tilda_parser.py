@@ -116,7 +116,7 @@ filter_order = FilterOrder()
 
 class FilterRocket(MessageFilter):
     def filter(self, message):
-        return '№' in message.text
+        return 'arrow_right_alt' in message.text
 filter_rocket = FilterRocket()
 
 
