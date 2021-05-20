@@ -28,7 +28,7 @@ Rocket
 
 def parse_rocket_fmt(text):
     # take copy past list from rocket app and convert to meaningful info
-    if "№" not in text:
+    if "arrow_right_alt" not in text:
         return 'No Rocket orders passed'
 
     l = []
