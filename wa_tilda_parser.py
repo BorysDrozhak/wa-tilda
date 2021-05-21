@@ -7,6 +7,11 @@ from telegram.ext import Filters, MessageFilter, MessageHandler, Updater
 from utils.rocket import parse_rocket, parse_total_kassa
 from utils.tilda import parse_order
 
+waiters_channel = "-551172825"
+orders_channel = "-1001353838635"
+cash_flow_channel = "84206430"
+channels = [waiters_channel, orders_channel, cash_flow_channel]
+
 b = "AAFiYwWlbJwvUhbwV"
 c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by mere people on windows man
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -35,7 +40,7 @@ def send_parsed_order(update, context):
         err = e
         text = str(traceback.format_exc())
         text = text + '\n\n Borys will have a look ;)'
-    if str(chat_id) != "-1001353838635" and str(chat_id) != "84206430":
+    if str(chat_id) not in channels:
         text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
         context.bot.send_message(
             chat_id=-1001353838635,
@@ -59,6 +64,7 @@ def send_parsed_order(update, context):
 
 def send_parse_rocket(update, context):
     chat_id = update.effective_chat.id
+    print(str(chat_id))
     err = ''
     try:
         text = parse_rocket(update.message.text)
@@ -92,7 +98,7 @@ def send_parse_zvit(update, context):
         err = e
         text = str(traceback.format_exc())
         text = text + '\n\n Borys will have a look ;)'
-    if str(chat_id) != "-447482461" and str(chat_id) != "84206430":
+    if str(chat_id) not in channels:
         context.bot.send_message(
             chat_id=-447482461,
             text=text,
@@ -102,6 +108,20 @@ def send_parse_zvit(update, context):
     context.bot.send_message(
         chat_id=chat_id,
         text=text,
+        # parse_mode='HTML'
+    )
+    tips = 0.0
+    for line in text.split('\n'):
+        if "чай: " in line:
+            tips = float(line.split(' ')[1].rstrip('?'))
+    if tips:
+        extra_text = f"don't forget extra tips via terminal: {tips}"
+    else:
+        extra_text = ''
+
+    context.bot.send_message(
+        chat_id=waiters_channel,
+        text=f"Reminder: Please fill out tips https://docs.google.com/spreadsheets/d/1Gps_LELU4rINF9WRPVaasOy1IiEjwwg9TIv9zMQ0deo/edit?usp=sharing\n{extra_text}",
         # parse_mode='HTML'
     )
     if err:

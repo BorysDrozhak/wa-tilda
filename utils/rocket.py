@@ -85,9 +85,18 @@ def parse_total_kassa(text):
     elif delta > 0:
         alarm = True
 
-    if tips != 0:
-        return f"{name.strip('.')}\n\nРазом: {total}\nчай: {tips}?"
-    elif alarm:
-        return f"{name.strip('.')}: {total}\n\n Не сходиться z-звіт з айко продажем на:{delta}"
+    if total > 30000:
+        congrats = f'\n\nOMFG! Total is {total}??\n You are crazy motherfuckers!!'
+    if total > 16000:
+        congrats = f'\n\nWow! Total is {total}?\n Great day everyone! I hope you all doing okay, take care going home ❤️'
+    if total > 12000:
+        congrats = f'\n\n Not a bad day suckers. Total is {total}?\nHope you can more to impress me 🤗'
     else:
-        return f"{name.strip('.')}: {total}"
+        congrats = ""
+
+    if tips != 0:
+        return f"{name.strip('.')}\n\nРазом: {total}\nчай: {tips}?{congrats}"
+    elif alarm:
+        return f"{name.strip('.')}: {total}\n\n Не сходиться z-звіт з айко продажем на:{delta}{congrats}"
+    else:
+        return f"{name.strip('.')}: {total}{congrats}"
