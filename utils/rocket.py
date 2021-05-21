@@ -33,7 +33,7 @@ def parse_rocket_fmt(text):
 
     l = []
     for i in text.split("\n"):
-        if "№" in i:
+        if len(i) == 8 and 'UAH' not in i and ' ' not in i:
             l.append({"price": 0, "type": ""})
         elif "UAH" in i:
             l[-1]["price"] = float(i.split(" ")[0].replace(',', ''))
