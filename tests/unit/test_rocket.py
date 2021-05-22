@@ -10,4 +10,4 @@ def test_example1():
 
 def test_total_tip():
     # чай 85
-    assert parse_total_kassa(example_total1) == '''Каса 2021-05-13\n\nРазом: 13268.5\nчай: 85.0?'''
+    assert parse_total_kassa(example_total1) == '''Каса 2021-05-13\n\nРазом: 13268.5\nчай: 85.0?\n\n Not a bad day suckers. Total is 13268.5?\nHope you can more to impress me 🤗'''

@@ -1,4 +1,4 @@
-example1 = '''№ 5W8VR343
+example1 = '''5W8VR343
 167.3 UAH
 credit_card
 15.04
@@ -6,7 +6,7 @@ credit_card
 arrow_right_alt
 15.04
 13:55
-№ NU9CR928
+NU9CR928
 396.2 UAH
 credit_card
 15.04
@@ -14,7 +14,7 @@ credit_card
 arrow_right_alt
 15.04
 14:19
-№ 1OLUR668
+1OLUR668
 411.3 UAH
 credit_card
 15.04
@@ -22,7 +22,7 @@ credit_card
 arrow_right_alt
 15.04
 15:22
-№ 8ISVR632
+8ISVR632
 329.7 UAH
 credit_card
 15.04
@@ -30,7 +30,7 @@ credit_card
 arrow_right_alt
 15.04
 16:57
-№ 1XVLR124
+1XVLR124
 318.5 UAH
 credit_card
 15.04
@@ -38,7 +38,7 @@ credit_card
 arrow_right_alt
 15.04
 19:54
-№ 23VER281
+23VER281
 556.3 UAH
 credit_card
 15.04
@@ -46,7 +46,7 @@ credit_card
 arrow_right_alt
 15.04
 21:26
-№ YUPBR212
+YUPBR212
 805.7 UAH
 money
 15.04
@@ -54,7 +54,7 @@ money
 arrow_right_alt
 15.04
 21:34
-№ LE90R267
+LE90R267
 369.6 UAH
 credit_card
 15.04
@@ -62,7 +62,7 @@ credit_card
 arrow_right_alt
 15.04
 21:45
-№ L3LKR483
+L3LKR483
 363.3 UAH
 credit_card
 15.04
@@ -70,7 +70,7 @@ credit_card
 arrow_right_alt
 15.04
 21:50
-№ K2H7R682
+K2H7R682
 347.2 UAH
 credit_card
 15.04
@@ -78,7 +78,7 @@ credit_card
 arrow_right_alt
 15.04
 22:20
-№ 5748R598
+5748R598
 251.7 UAH
 credit_card
 15.04
@@ -86,7 +86,7 @@ credit_card
 arrow_right_alt
 15.04
 22:32
-№ TW7TR953
+TW7TR953
 244.3 UAH
 credit_card
 15.04
