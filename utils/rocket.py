@@ -65,18 +65,18 @@ def parse_total_kassa(text):
         if "Каса 202" in line:
             name = line
         elif "Загально =" in line:
-            total += float(line.split('=')[1].strip().split(' ')[0])
+            total += float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
         elif "Total =" in line:
-            total += float(line.split('=')[1].strip().split(' ')[0])
+            total += float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
         elif "LiqPay доставки =" in line:
-            total += float(line.split('=')[1].strip().split(' ')[0])
+            total += float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
         if "Термінал" in line:
             terminal_passed = True
         if "Загально =" in line and terminal_passed is True:
             terminal_passed = False
-            terminal_total = float(line.split('=')[1].strip().split(' ')[0])
+            terminal_total = float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
         if "Z-звіт" in line:
-            z_zvit = float(line.split('=')[1].strip().split(' ')[0])
+            z_zvit = float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
@@ -86,11 +86,11 @@ def parse_total_kassa(text):
         alarm = True
 
     if total > 30000:
-        congrats = f'\n\nOMFG! Total is {total}??\n You are crazy motherfuckers!!'
+        congrats = f'\n\nБля ото жесть! Даніла ю а крезі! Так тримати crazy motherfuckers!!'
     if total > 16000:
-        congrats = f'\n\nWow! Total is {total}?\n Great day everyone! I hope you all doing okay, take care going home ❤️'
+        congrats = f'\n\nВав! Маю надію ви всі добре почуваєтесь, бережіть себе і будьте бережні, як будете їхати додомку ❤️'
     if total > 12000:
-        congrats = f'\n\n Not a bad day suckers. Total is {total}?\nHope you can more to impress me 🤗'
+        congrats = f'\n\n Непогано, але для минулого місяцю. Маю надію ви здивуєте мене іншими цифрами 🤗'
     else:
         congrats = ""
 
