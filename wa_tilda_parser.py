@@ -128,7 +128,7 @@ def send_parse_zvit(update, context):
         text=(
             f"Нагадування: Будь ласка, запишіть чаєві "
             f"https://docs.google.com/spreadsheets/d/1Gps_LELU4rINF9WRPVaasOy1IiEjwwg9TIv9zMQ0deo/edit?usp=sharing\n{extra_text}"
-            f"\n касса - {total_resto}"
+            f"\n каса - {total_resto}"
         ),
         # parse_mode='HTML'
     )
