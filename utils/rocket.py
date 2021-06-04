@@ -56,27 +56,43 @@ def parse_rocket_fmt(text):
     Total = {total["total"]}'''
 
 
+def parse_number_in_zvit(line):
+    return float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
+
+
 def parse_total_kassa(text):
     total = 0.0
+    total_delivery = 0.0
+    total_resto = 0.0
+    total_main = 0.0
     terminal_passed = False
+    rocket_passed = False
     terminal_total = 0
     z_zvit = 0
     for line in text.split('\n'):
         if "Каса 202" in line:
-            name = line
-        elif "Загально =" in line:
-            total += float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
-        elif "Total =" in line:
-            total += float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
+            name = line.strip('.')
+        elif "Загально =" in line or "Total =" in line:
+            total += parse_number_in_zvit(line)
+        elif "Ресторан =" in line:
+            total_resto += parse_number_in_zvit(line)
         elif "LiqPay доставки =" in line:
-            total += float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
+            price_liqpay = parse_number_in_zvit(line)
+            total_delivery += price_liqpay
+            total += price_liqpay
+        if "Доставка =" in line:
+            total_delivery += parse_number_in_zvit(line)
         if "Термінал" in line:
             terminal_passed = True
+        if "Rocket" in line:
+            rocket_passed = True
         if "Загально =" in line and terminal_passed is True:
             terminal_passed = False
-            terminal_total = float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
+            terminal_total = parse_number_in_zvit(line)
+        if "Total =" in line and rocket_passed is True:
+            total_delivery += parse_number_in_zvit(line)
         if "Z-звіт" in line:
-            z_zvit = float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
+            z_zvit = parse_number_in_zvit(line)
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
@@ -84,6 +100,18 @@ def parse_total_kassa(text):
         tips = delta * -1.0
     elif delta > 0:
         alarm = True
+
+        # 16921 
+    new_records = ''
+    top_delivery = 16151
+    top_delivery_date = '09.04'
+    top_resto = 16921
+    top_resto_date = '13.03'
+
+    if total_delivery > top_delivery:
+        new_records += f'\nВав! Новий рекорд на доставці! Був {top_delivery} {top_delivery_date}, а тепер {total_delivery}'
+    if total_resto > top_resto:
+        new_records += f'\nВав! Новий рекорд в залі ретсорану! Був {total_resto} {top_resto_date}, а тепер {total_resto}'
 
     if total > 30000:
         congrats = f'\n\nБл* ото жесть! Даніла ю а крезі! Так тримати crazy motherfuckers!!'
@@ -94,9 +122,13 @@ def parse_total_kassa(text):
     else:
         congrats = ""
 
+    tip_check = ''
     if tips != 0:
-        return f"{name.strip('.')}\n\nРазом: {total}\nчай: {tips}?{congrats}"
+        tip_check = f"\nчай: {tips}?"
     elif alarm:
-        return f"{name.strip('.')}: {total}\n\n Не сходиться z-звіт з айко продажем на:{delta}{congrats}"
-    else:
-        return f"{name.strip('.')}: {total}{congrats}"
+        tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
+
+    return (
+        f"{name} - Разом: {total}\nДоставка: {total_delivery}"
+        f"{tip_check}{congrats}{new_records}"
+    )
