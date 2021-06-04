@@ -111,6 +111,7 @@ def send_parse_zvit(update, context):
         # parse_mode='HTML'
     )
     tips = 0.0
+    total_resto = 0.0
     for line in text.split('\n'):
         if "чай: " in line:
             tips = float(line.split(' ')[1].rstrip('?'))
