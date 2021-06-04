@@ -110,7 +110,7 @@ def send_parse_zvit(update, context):
         if "чай: " in line:
             tips = float(line.split(' ')[1].rstrip('?'))
         elif "Зал ресторану: " in line:
-            total_resto = float(line.split(' ')[1].rstrip('?'))
+            total_resto = float(line.split(' ')[2])
 
     if tips:
         extra_text = f"не забудьте екстра чаєві через термінал: {tips}"
