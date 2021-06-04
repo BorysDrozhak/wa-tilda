@@ -10,7 +10,8 @@ from utils.tilda import parse_order
 waiters_channel = "-551172825"
 orders_channel = "-1001353838635"
 cash_flow_channel = "84206430"
-channels = [waiters_channel, orders_channel, cash_flow_channel]
+cash_flow_channel2 = "-447482461"
+channels = [waiters_channel, orders_channel, cash_flow_channel, cash_flow_channel2]
 
 b = "AAFiYwWlbJwvUhbwV"
 c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by mere people on windows man
@@ -72,13 +73,6 @@ def send_parse_rocket(update, context):
         err = e
         text = str(traceback.format_exc())
         text = text + '\n\n Borys will have a look ;)'
-    # Do not send in cache-flow
-    # if str(chat_id) != "-447482461" and str(chat_id) != "84206430":
-    #     context.bot.send_message(
-    #         chat_id=-447482461,
-    #         text=text,
-    #         # parse_mode='HTML'
-    #     )
 
     context.bot.send_message(
         chat_id=chat_id,
