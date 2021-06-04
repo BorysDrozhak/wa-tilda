@@ -114,6 +114,9 @@ def send_parse_zvit(update, context):
     for line in text.split('\n'):
         if "чай: " in line:
             tips = float(line.split(' ')[1].rstrip('?'))
+        elif "Зал ресторану: " in line:
+            total_resto = float(line.split(' ')[1].rstrip('?'))
+
     if tips:
         extra_text = f"не забудьте екстра чаєві через термінал: {tips}"
     else:
@@ -121,7 +124,11 @@ def send_parse_zvit(update, context):
 
     context.bot.send_message(
         chat_id=waiters_channel,
-        text=f"Нагадування: Будь ласка, запишіть чаєві https://docs.google.com/spreadsheets/d/1Gps_LELU4rINF9WRPVaasOy1IiEjwwg9TIv9zMQ0deo/edit?usp=sharing\n{extra_text}",
+        text=(
+            f"Нагадування: Будь ласка, запишіть чаєві "
+            f"https://docs.google.com/spreadsheets/d/1Gps_LELU4rINF9WRPVaasOy1IiEjwwg9TIv9zMQ0deo/edit?usp=sharing\n{extra_text}"
+            f"\n касса - {total_resto}"
+        ),
         # parse_mode='HTML'
     )
     if err:
