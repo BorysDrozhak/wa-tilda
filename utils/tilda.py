@@ -58,6 +58,7 @@ def parse_order(text):
     client_comment, persons, client_no_need = None, None, None
     result_order_block, other, utm = None, None, None
     do_not_know_zones, self_delivery = False, False
+    promocode = None
 
     order_block = text.split("Данные плательщика:")[0]
     add_block = text.split("Дополнительные данные:")
@@ -95,6 +96,8 @@ def parse_order(text):
             client_name = info
         elif param == 'Address' or param == "Адрес доставки":
             client_address = info
+        elif param == 'Промокод':
+            promocode = info
         elif param == 'Phone':
             client_phone = (
                 info
@@ -131,6 +134,9 @@ def parse_order(text):
             continue
         elif "Платежная система" in line or "Код платежа" in line:
             order_type = ' '.join(line.split(": ")[1:])
+            continue
+        elif 'Промокод' in line:
+            promocode = line.split(": ")[1]
             continue
         elif not order or len(order[0]) != 2:
             continue
@@ -194,7 +200,13 @@ def parse_order(text):
     else:
         client_no_need += '\n'
 
-    # smart parsing
+    if not promocode:
+        promocode = ''
+    else:
+        promocode = f'\nPROMOCODE: {promocode} (10%)'
+
+
+    ### smart parsing
     # extra = ""
     if "0682582930" in client_phone or "0982454975" in client_phone:
         if 'кульпарків' in client_address or 'Кульпарк' in client_address:
@@ -214,7 +226,7 @@ def parse_order(text):
 {result_order_block}
 {billing_info(order_type, total_order_price)}
 {utm}
-{url(self_delivery, client_address)}"""
+{url(self_delivery, client_address)}{promocode}"""
 
     return parsed_text
 
