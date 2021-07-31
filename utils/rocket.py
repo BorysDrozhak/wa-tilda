@@ -19,8 +19,11 @@ def parse_rocket(text):
 
 LiqPay доставки = 
 
-Rocket
 {parse_rocket_fmt(text)}
+
+Glovo Кеш = 
+Glovo Безнал = 
+Glovo Total = 
 
 Готівка в касі:
 """
@@ -60,9 +63,9 @@ def parse_rocket_fmt(text):
     total["credit_card"] = round(total["credit_card"], 2)
     total["total"] = round(total["credit_card"] + total["cash"], 2)
 
-    return f'''    Кеш = {total["cash"]}
-    Безнал = {total["credit_card"]}
-    Total = {total["total"]}'''
+    return f'''Rocket Кеш = {total["cash"]}
+Rocket Безнал = {total["credit_card"]}
+Rocket Total = {total["total"]}'''
 
 
 def parse_number_in_zvit(line):
@@ -93,12 +96,12 @@ def parse_total_kassa(text):
             total_delivery += parse_number_in_zvit(line)
         if "Термінал" in line:
             terminal_passed = True
-        if "Rocket" in line:
-            rocket_passed = True
         if "Загально =" in line and terminal_passed is True:
             terminal_passed = False
             terminal_total = parse_number_in_zvit(line)
-        if "Total =" in line and rocket_passed is True:
+        if "Total Rocket =" in line or "Rocket Total =" in line:
+            total_delivery += parse_number_in_zvit(line)
+        if "Total Glovo =" in line or "Glovo Total =" in line:
             total_delivery += parse_number_in_zvit(line)
         if "Z-звіт" in line:
             z_zvit = parse_number_in_zvit(line)
@@ -122,14 +125,16 @@ def parse_total_kassa(text):
     if total_resto > top_resto:
         new_records += f'\nВав! Новий рекорд в залі ретсорану! Був {top_resto} {top_resto_date}, а тепер {total_resto}'
 
+
     if total > 30000:
         congrats = f'\n\nБл* ото жесть! Даніла ю а крезі! Так тримати crazy motherfuckers!!'
-    elif total > 16000:
+    elif total > 15000:
         congrats = f'\n\nВав! Маю надію ви всі добре почуваєтесь, бережіть себе і будьте бережні, як будете їхати додомку ❤️'
     elif total > 12000:
         congrats = f'\n\nНепогано, але для лютого :) Певен, ви можете ліпше 🤗'
     else:
         congrats = ""
+
 
     tip_check = ''
     if tips != 0:
