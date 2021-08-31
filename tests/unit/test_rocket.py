@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from tests.unit.data.rocket_order_examples import (example1, example_total1,
                                                    example_total2,
                                                    example_total3)

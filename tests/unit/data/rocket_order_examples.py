@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 example1 = '''5W8VR343
 167.3 UAH
 credit_card

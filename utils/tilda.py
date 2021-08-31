@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 
 # якщо треба щоб щось не показувало - то додай це сюди (повною стрічкою)
@@ -92,13 +94,13 @@ def parse_order(text):
             continue
 
         info = line.split(":")[1].lstrip()
-        if param == 'Name':
+        if param == 'Name' or param == 'name':
             client_name = info
-        elif param == 'Address' or param == "Адрес доставки":
+        elif param == 'Address' or param == 'addr' or param == "Адрес доставки":
             client_address = info
         elif param == 'Промокод':
             promocode = info
-        elif param == 'Phone':
+        elif param == 'Phone' or param == 'phone':
             client_phone = (
                 info
                 .replace(' ', '')
@@ -109,7 +111,7 @@ def parse_order(text):
         elif param == 'не_треба':
             client_no_need = info
             no_need_bool = True
-        elif param == 'Persons':
+        elif param == 'Persons' or param == 'persons':
             persons = "Для: " + info
         elif param == 'Комент:' or param == 'Comment':
             client_comment = "Comment: " + info
@@ -208,6 +210,7 @@ def parse_order(text):
 
     ### smart parsing
     # extra = ""
+    from ipdb import set_trace; from pprint import pprint as pp; set_trace(context=6)
     if "0682582930" in client_phone or "0982454975" in client_phone:
         if 'кульпарків' in client_address or 'Кульпарк' in client_address:
             client_address = "Кульпарківська 226Б (Місто Трав), Перший домофон 3#36, другий ліворуч 36, другий поверх"

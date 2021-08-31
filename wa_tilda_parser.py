@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import getpass
 import logging
 import re

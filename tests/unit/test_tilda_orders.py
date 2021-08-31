@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 from tests.unit.data.tilda_orders import (answer1, answer2, answer3, answer4,
                                           example1, example2, example3,
