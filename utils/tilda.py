@@ -113,7 +113,7 @@ def parse_order(text):
             no_need_bool = True
         elif param == 'Persons' or param == 'persons':
             persons = "Для: " + info
-        elif param == 'Комент:' or param == 'Comment':
+        elif param == 'Комент:' or param == 'Comment' or param == 'comment':
             client_comment = "Comment: " + info
         elif param == 'НЕдзвонити-НАПИСАТИ':
             if info == 'yes':
@@ -210,7 +210,6 @@ def parse_order(text):
 
     ### smart parsing
     # extra = ""
-    from ipdb import set_trace; from pprint import pprint as pp; set_trace(context=6)
     if "0682582930" in client_phone or "0982454975" in client_phone:
         if 'кульпарків' in client_address or 'Кульпарк' in client_address:
             client_address = "Кульпарківська 226Б (Місто Трав), Перший домофон 3#36, другий ліворуч 36, другий поверх"
