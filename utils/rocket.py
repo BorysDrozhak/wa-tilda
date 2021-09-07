@@ -17,7 +17,8 @@ def parse_rocket(text):
     Доставка = 
     Ресторан = 
     Загально = 
-    Z-звіт   =
+    Shake to pay =
+    Z-звіт   = 
 
 LiqPay доставки = 
 
@@ -107,6 +108,9 @@ def parse_total_kassa(text):
             total_delivery += parse_number_in_zvit(line)
         if "Z-звіт" in line:
             z_zvit = parse_number_in_zvit(line)
+        if "Shake to pay" in line:
+            total_resto += parse_number_in_zvit(line)
+            total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
@@ -115,12 +119,11 @@ def parse_total_kassa(text):
     elif delta > 0:
         alarm = True
 
-        # 16921 
     new_records = ''
     top_delivery = 16151
     top_delivery_date = '09.04'
-    top_resto = 23665
-    top_resto_date = '12.06'
+    top_resto = 25700
+    top_resto_date = '08.08'
 
     if total_delivery > top_delivery:
         new_records += f'\nВав! Новий рекорд на доставці! Був {top_delivery} {top_delivery_date}, а тепер {total_delivery}'
