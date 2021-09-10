@@ -16,8 +16,8 @@ def parse_rocket(text):
 Термінал
     Доставка = 
     Ресторан = 
+    Shake to pay = 
     Загально = 
-    Shake to pay =
     Z-звіт   = 
 
 LiqPay доставки = 
