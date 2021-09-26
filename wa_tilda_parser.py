@@ -39,8 +39,9 @@ def send_parsed_order(update, context):
     chat_id = update.effective_chat.id
     print("chart_id: " + str(chat_id))
     err = ''
+    text_for_client = ''
     try:
-        text = parse_order(update.message.text)
+        text, text_for_client = parse_order(update.message.text)
     except Exception as e:
         err = e
         text = str(traceback.format_exc())
@@ -54,6 +55,7 @@ def send_parsed_order(update, context):
     if err != '':
         # if error happen, make it string and send it
         text = text
+        text_for_client = ''
     else:
         # removing https links when sending them to main chat
         pass
@@ -63,6 +65,12 @@ def send_parsed_order(update, context):
         text=text,
         # parse_mode='HTML'
     )
+    context.bot.send_message(
+        chat_id=chat_id,
+        text=text_for_client,
+        # parse_mode='HTML'
+    )
+
     if err:
         raise err
 

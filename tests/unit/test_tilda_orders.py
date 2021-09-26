@@ -17,4 +17,5 @@ from utils.tilda import parse_order
     ],
 )
 def test_example(tilda_order, parsed_answer):
-    assert parse_order(tilda_order) == parsed_answer
+    text, text_client = parse_order(tilda_order)
+    assert text == parsed_answer
