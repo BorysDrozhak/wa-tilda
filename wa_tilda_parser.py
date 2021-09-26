@@ -13,6 +13,8 @@ waiters_channel = "-551172825"
 orders_channel = "-1001353838635"
 cash_flow_channel = "84206430"
 cash_flow_channel2 = "-447482461"
+wa_orders_channel = "-461519645"
+operations_channel = "-396828808"
 channels = [waiters_channel, orders_channel, cash_flow_channel, cash_flow_channel2]
 
 b = "AAFiYwWlbJwvUhbwV"
@@ -119,6 +121,8 @@ def send_parse_zvit(update, context):
     else:
         extra_text = ''
 
+    if total_resto < 1:
+        return
     context.bot.send_message(
         chat_id=waiters_channel,
         text=(
@@ -127,6 +131,22 @@ def send_parse_zvit(update, context):
             f"\n каса - {total_resto}"
         ),
         # parse_mode='HTML'
+    )
+    context.bot.send_message(
+        chat_id=operations_channel,
+        text=(
+            "Good job team. Kind reminder for the end of the shift"
+            "- Фоткаємо дошку з фідбеком і постимо в канал\n"
+            "- Закриваємо робочу зміну в касі/айко/особисту\n"
+            "- Вимикаємо світло в залі ресторану, на складі та кухні\n"
+            "- Виключаємо усі девайси: чекодрук, принтер та кондиціонер\n"
+            "- Прибираємо робоче місце\n"
+            "- Перевіряємо заряд батереї на обох робочих телефонах та планшеті\n"
+            "- Закриваємо металеві двері для входу курєрів та постачальників\n"
+            "- Вимикаємо термінал\n"
+            "- Скручуємо маркізу та вимикаємо ліхтарики на ній\n"
+            "- Ставимо реторан на сигналізацію та закриваємо двері на ключ\n"
+        ),
     )
     if err:
         raise err
@@ -159,7 +179,9 @@ dispatcher.add_handler(zvit_handler)
 
 # just logging messages recieved
 def echo(update, context):
+    chat_id = update.effective_chat.id
     print(update.message.text)
+    print("chart_id: " + str(chat_id))
 
 echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
 dispatcher.add_handler(echo_handler)
