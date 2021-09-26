@@ -249,7 +249,10 @@ def parse_order(text):
     else:
         about_delivery_block = '(включно з доставкою 🙇‍♂️)'
 
-    parsed_text_for_client = f"""
+    if client_nocall == 'Треба дзвонити клієнту!':
+        parsed_text_for_client = ''
+    else:
+        parsed_text_for_client = f"""
 Доброго дня, {client_name} 😎
 Отримали ваше замовлення на сайті:
 

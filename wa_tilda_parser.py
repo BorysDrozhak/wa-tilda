@@ -63,13 +63,12 @@ def send_parsed_order(update, context):
     context.bot.send_message(
         chat_id=chat_id,
         text=text,
-        # parse_mode='HTML'
     )
-    context.bot.send_message(
-        chat_id=chat_id,
-        text=text_for_client,
-        # parse_mode='HTML'
-    )
+    if text_for_client:
+        context.bot.send_message(
+            chat_id=chat_id,
+            text=text_for_client,
+        )
 
     if err:
         raise err
