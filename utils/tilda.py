@@ -228,6 +228,8 @@ def parse_order(text):
     if "0682582930" in client_phone or "0982454975" in client_phone:
         if 'кульпарків' in client_address or 'Кульпарк' in client_address:
             client_address = "Кульпарківська 226Б (Місто Трав), Перший домофон 3#36, другий ліворуч 36, другий поверх"
+        if 'датароб' in client_address or 'Датар' in client_address or 'Data' in client_address:
+            client_address = "DataRobot. Героїв Упа 73, корпус 7, 8й поверх. Зелений Грін лаб кафе при вході"
 
     smile = random.choice(['🥰','😇', '😊', '🙇‍♂️', '🤩', '😎', '😉', '🙂', '🥳',])
     delivery_smile = random.choice(['🙇‍♂️', '🚀'])
