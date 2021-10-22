@@ -9,12 +9,12 @@ from telegram.ext import Filters, MessageFilter, MessageHandler, Updater
 from utils.rocket import parse_rocket, parse_total_kassa
 from utils.tilda import parse_order
 
-waiters_channel = "-551172825"
+waiters_channel = "-1001792566598"
 orders_channel = "-1001353838635"
-cash_flow_channel = "84206430"
+cash_flow_channel = "-1001658828551"
 cash_flow_channel2 = "-447482461"
 wa_orders_channel = "-461519645"
-operations_channel = "-396828808"
+operations_channel = "-1001719165729"
 channels = [waiters_channel, orders_channel, cash_flow_channel, cash_flow_channel2]
 
 b = "AAFiYwWlbJwvUhbwV"
