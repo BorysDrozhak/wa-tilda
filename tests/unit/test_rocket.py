@@ -8,7 +8,7 @@ from utils.rocket import parse_rocket_fmt, parse_total_kassa
 
 def test_example1():
     assert parse_rocket_fmt(example1) == '''Rocket Кеш = 805.7
-Rocket Безнал = 3755.4
+Rocket Безнал = 9755.4
 Rocket Total = 4561.1'''
 
 
