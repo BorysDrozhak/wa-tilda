@@ -2,6 +2,7 @@
 
 import random
 import re
+from datetime import datetime
 
 # якщо треба щоб щось не показувало - то додай це сюди (повною стрічкою)
 ignore_options = [
@@ -232,6 +233,7 @@ def parse_order(text):
             client_address = "DataRobot. Героїв Упа 73, корпус 7, 8й поверх. Зелений Грін лаб кафе при вході"
 
     smile = random.choice(['🥰','😇', '😊', '🙇‍♂️', '🤩', '😎', '😉', '🙂', '🥳',])
+    greeting = greetings(client_name)
     delivery_smile = random.choice(['🙇‍♂️', '🚀'])
     parsed_text = f"""{client_nocall}
 {address_note}
@@ -257,8 +259,8 @@ def parse_order(text):
         parsed_text_for_client = ''
     else:
         parsed_text_for_client = f"""
-Доброго дня, {client_name} 😎
-Отримали ваше замовлення на сайті:
+{greeting} {smile}
+Ми підтверджуємо ваше замовлення на сайті, або ж Команда WA уже розпочала приготування вашого замовлення
 
 {result_order_block_for_client}
 
@@ -266,7 +268,7 @@ def parse_order(text):
 💰 Разом: {total_order_price} {about_delivery_block}
 
 Дякуємо вам за замовлення!{smile}
-Орієнтовний час приготування 40-80 хвилин 🧭
+Орієнтовний час приготування та доставки 40-80 хвилин 🧭
 Обов'язково повідомимо як кур'єр вирушить від нас {delivery_smile}
 """
 
@@ -321,3 +323,15 @@ def url(self_delivery, client_address):
             f"{client_address_fmt}"
             "+L'viv,+L'vivs'ka+oblast,+79000"
         )
+
+def greetings(client_name):
+    current_hours = datetime.datetime.now().hour
+    return (
+        f"Доброго ранку, {client_name}"
+        if 5 <= current_hours <= 11
+        else f"Доброго дня, {client_name}"
+        if 12 <= current_hours <= 17
+        else f"Доброго вечора, {client_name}"
+        if 18 <= current_hours <= 23
+        else f"Доброї ночі, {client_name}"
+    )
