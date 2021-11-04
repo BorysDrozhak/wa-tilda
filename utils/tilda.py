@@ -325,7 +325,7 @@ def url(self_delivery, client_address):
         )
 
 def greetings(client_name):
-    current_hours = datetime.datetime.now().hour
+    current_hours = datetime.now().hour
     return (
         f"Доброго ранку, {client_name}"
         if 5 <= current_hours <= 11
