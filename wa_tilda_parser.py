@@ -28,8 +28,10 @@ d = "1700108054:A"
 f = "AFsN_Agk1G5eyh19Dxqdn_jrPmuW60Zy5"
 b_bot = d + f + "4"
 
+env = 'prod'
 if getpass.getuser() == "bdrozhak":
     tok = b_bot
+    env = 'dev'
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -46,10 +48,10 @@ def send_parsed_order(update, context):
         err = e
         text = str(traceback.format_exc())
         text = text + '\n\n Borys will have a look ;)'
-    if str(chat_id) not in channels:
+    if str(chat_id) not in channels and env == 'prod':
         text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
         context.bot.send_message(
-            chat_id=-1001353838635,
+            chat_id=orders_channel,
             text=text,
         )
     if err != '':
