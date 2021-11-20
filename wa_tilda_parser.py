@@ -10,12 +10,12 @@ from utils.rocket import parse_rocket, parse_total_kassa
 from utils.tilda import parse_order
 
 waiters_channel = "-1001792566598"
-orders_channel = "-1001353838635"
+site_orders_channel = "-1001353838635"
 cash_flow_channel = "-1001658828551"
 cash_flow_channel2 = "-447482461"
 wa_orders_channel = "-461519645"
 operations_channel = "-1001719165729"
-channels = [waiters_channel, orders_channel, cash_flow_channel, cash_flow_channel2]
+channels = [waiters_channel, site_orders_channel, cash_flow_channel, cash_flow_channel2]
 
 b = "AAFiYwWlbJwvUhbwV"
 c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by mere people on windows man
@@ -28,9 +28,19 @@ d = "1700108054:A"
 f = "AFsN_Agk1G5eyh19Dxqdn_jrPmuW60Zy5"
 b_bot = d + f + "4"
 
+a_1 = "2092656899:A"
+a_2 = "AGHqh_IFd1li2aVxNBHVqx7WaCVHqqHwN"
+
+a_bot = a_1 + a_2 + "I"
+
 env = 'prod'
+
 if getpass.getuser() == "bdrozhak":
     tok = b_bot
+    env = 'dev'
+
+elif getpass.getuser() == "andiy":
+    tok = a_bot
     env = 'dev'
 
 updater = Updater(token=tok, use_context=True)
@@ -51,7 +61,7 @@ def send_parsed_order(update, context):
     if str(chat_id) not in channels and env == 'prod':
         text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
         context.bot.send_message(
-            chat_id=orders_channel,
+            chat_id=site_orders_channel,
             text=text,
         )
     if err != '':
