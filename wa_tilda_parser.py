@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import getpass
 import logging
 import re
@@ -170,6 +171,43 @@ def send_parse_zvit(update, context):
         raise err
 
 
+def send_kasa(update, context):
+    chat_id = update.effective_chat.id
+
+    text = f"""
+
+Каса {datetime.date.today()}.
+
+Готівка
+    Доставка = 
+    Ресторан = 
+    Загально = 
+
+Термінал
+    Доставка = 
+    Ресторан = 
+    Shake to pay = 
+    Загально = 
+    Z-звіт   = 
+
+LiqPay доставки = 
+
+Rocket Кеш = 
+Rocket Безнал = 
+Rocket Total = 
+
+Glovo Кеш = 
+Glovo Безнал = 
+Glovo Total = 
+
+Готівка в касі:
+"""
+    context.bot.send_message(
+        chat_id=chat_id,
+        text=text,
+    )
+
+
 class FilterOrder(MessageFilter):
     def filter(self, message):
         return 'Заказ #' in message.text
@@ -187,12 +225,21 @@ class FilterZvit(MessageFilter):
         return 'Каса 202' in message.text
 filter_zvit = FilterZvit()
 
+
+class FilterKasa(MessageFilter):
+    def filter(self, message):
+        text = message.text.lower()
+        return 'каса' in text and not "202" in text
+filter_kasa = FilterKasa()
+
 order_handler = MessageHandler(filter_order, send_parsed_order)
 rocket_handler = MessageHandler(filter_rocket, send_parse_rocket)
 zvit_handler = MessageHandler(filter_zvit, send_parse_zvit)
+kasa_handler = MessageHandler(filter_kasa, send_kasa)
 dispatcher.add_handler(order_handler)
 dispatcher.add_handler(rocket_handler)
 dispatcher.add_handler(zvit_handler)
+dispatcher.add_handler(kasa_handler)
 
 
 # just logging messages recieved
