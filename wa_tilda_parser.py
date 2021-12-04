@@ -200,6 +200,10 @@ Glovo Кеш =
 Glovo Безнал = 
 Glovo Total = 
 
+Bolt Кеш = 
+Bolt Безнал = 
+Bolt Total = 
+
 Готівка в касі:
 """
     context.bot.send_message(

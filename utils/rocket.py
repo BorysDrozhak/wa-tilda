@@ -28,6 +28,10 @@ Glovo Кеш =
 Glovo Безнал = 
 Glovo Total = 
 
+Bolt Кеш = 
+Bolt Безнал = 
+Bolt Total = 
+
 Готівка в касі:
 """
 
@@ -106,6 +110,10 @@ def parse_total_kassa(text):
             total_delivery += parse_number_in_zvit(line)
         if "Total Glovo =" in line or "Glovo Total =" in line:
             total_delivery += parse_number_in_zvit(line)
+        if "Total Bolt =" in line or "Bolt Total =" in line:
+            print(total_delivery)
+            total_delivery += parse_number_in_zvit(line)
+            print(total_delivery)
         if "Z-звіт" in line:
             z_zvit = parse_number_in_zvit(line)
         if "Shake to pay" in line:

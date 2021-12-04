@@ -146,6 +146,10 @@ Glovo Кеш = 90
 Glovo Безнал = 10
 Glovo Total = 100
 
+Bolt Кеш = 0
+Bolt Безнал = 0
+Bolt Total = 0
+
 Готівка в касі: 11807.36
 
 '''
@@ -172,6 +176,10 @@ LiqPay доставки = 63009
 Rocket Кеш = 1557.3
 Rocket Безнал = 44001.0
 Rocket Total = 49559.3
+
+Bolt Кеш = 1
+Bolt Безнал = 1
+Bolt Total = 2
 
 Готівка в касі: 11807.36
 
