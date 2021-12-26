@@ -130,8 +130,8 @@ def parse_total_kassa(text):
     new_records = ''
     top_delivery = 16151
     top_delivery_date = '09.04'
-    top_resto = 25700
-    top_resto_date = '08.08'
+    top_resto = 31369
+    top_resto_date = '25.12'
 
     if total_delivery > top_delivery:
         new_records += f'\nВав! Новий рекорд на доставці! Був {top_delivery} {top_delivery_date}, а тепер {total_delivery}'
