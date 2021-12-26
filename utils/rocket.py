@@ -130,8 +130,8 @@ def parse_total_kassa(text):
     new_records = ''
     top_delivery = 16151
     top_delivery_date = '09.04'
-    top_resto = 31369
-    top_resto_date = '25.12'
+    top_resto = 31845
+    top_resto_date = '26.12'
 
     if total_delivery > top_delivery:
         new_records += f'\nВав! Новий рекорд на доставці! Був {top_delivery} {top_delivery_date}, а тепер {total_delivery}'
@@ -140,7 +140,7 @@ def parse_total_kassa(text):
 
 
     if total > 30000:
-        congrats = f'\n\nБл* ото жесть! Даніла ю а крезі! Так тримати crazy motherfuckers!!'
+        congrats = f'\n\nНу і пупсики!! Вау Вау Вау'
     elif total > 15000:
         congrats = f'\n\nВав! Маю надію ви всі добре почуваєтесь, бережіть себе і будьте бережні, як будете їхати додомку ❤️'
     elif total > 12000:
