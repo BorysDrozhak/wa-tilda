@@ -139,7 +139,9 @@ def parse_total_kassa(text):
         new_records += f'\nВав! Новий рекорд в залі ретсорану! Був {top_resto} {top_resto_date}, а тепер {total_resto}'
 
 
-    if total > 30000:
+    if total > 40000:
+        congrats = f'\n\nЕй Йоу! Рілі???? О_О. ВАУ! Я хоч і бот в телеграмі, але вас дуже люблю <3'
+    elif total > 30000:
         congrats = f'\n\nНу і пупсики!! Вау Вау Вау'
     elif total > 15000:
         congrats = f'\n\nВав! Маю надію ви всі добре почуваєтесь, бережіть себе і будьте бережні, як будете їхати додомку ❤️'
