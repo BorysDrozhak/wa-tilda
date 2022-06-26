@@ -5,10 +5,16 @@ import getpass
 import logging
 import re
 import traceback
+import random
+import pytz
 
-from telegram.ext import Filters, MessageFilter, MessageHandler, Updater
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram.ext import Filters, MessageFilter, MessageHandler, Updater, CommandHandler
 from utils.rocket import parse_rocket, parse_total_kassa
 from utils.tilda import parse_order
+from utils.poll_data import POLLS, BUTTONS
+from utils.filters import filter_generate, filter_cancel
+from utils.states import state_obj
 
 waiters_channel = "-1001792566598"
 site_orders_channel = "-1001353838635"
@@ -40,7 +46,7 @@ if getpass.getuser() == "bdrozhak":
     tok = b_bot
     env = 'dev'
 
-elif getpass.getuser() == "andiy":
+elif getpass.getuser() == "andrii":
     tok = a_bot
     env = 'dev'
 
@@ -246,6 +252,59 @@ dispatcher.add_handler(zvit_handler)
 dispatcher.add_handler(kasa_handler)
 
 
+# daily poll job
+def poll_cancel(update, context):
+    state_obj.reset()
+    context.bot.send_message(
+        chat_id=operations_channel,
+        text="Дякую!",
+        reply_markup=ReplyKeyboardRemove()
+    )
+
+def create_poll(update, context):
+    """Sends a predefined poll"""
+    poll_data = random.choice(POLLS)
+    message = context.bot.send_poll(
+        update.effective_chat.id,
+        poll_data['title'],
+        poll_data['questions'],
+        is_anonymous=False,
+        allows_multiple_answers=False,
+    )
+    context.bot.send_message(
+        chat_id=operations_channel,
+        text="Дякую!",
+        reply_markup=ReplyKeyboardRemove()
+    )
+    state_obj.reset()
+
+#  run job for daily poll
+def callback_daily(context):
+    state_obj.generate()
+    context.bot.send_message(chat_id=operations_channel, text='Запустити Командний челендж?',
+                             reply_markup=ReplyKeyboardMarkup(BUTTONS, resize_keyboard=True, one_time_keyboard=True))
+
+#  create queue for daily running jobs
+def set_daily_message(update, context):
+    chat_id = update.message.chat_id
+    context.job_queue.run_daily(callback_daily, time=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone('Europe/Kiev')),
+                                days=(0, 1, 2, 3, 4, 5, 6), context=chat_id, name=str(chat_id))
+
+#  stop daily jobs
+def stop_daily(update, context):
+    chat_id = update.message.chat_id
+    context.bot.send_message(chat_id=chat_id,
+                      text='Stoped!')
+    context.job_queue.stop()
+
+dispatcher.add_handler(CommandHandler("daily_poll", set_daily_message, pass_job_queue=True))
+dispatcher.add_handler(CommandHandler('stop_daily', stop_daily, pass_job_queue=True))
+poll_handler = MessageHandler(filter_generate, create_poll, )
+dispatcher.add_handler(poll_handler)
+cancel_poll_handler = MessageHandler(filter_cancel, poll_cancel, )
+dispatcher.add_handler(cancel_poll_handler)
+
+
 # just logging messages recieved
 def echo(update, context):
     chat_id = update.effective_chat.id
@@ -254,8 +313,6 @@ def echo(update, context):
 
 echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
 dispatcher.add_handler(echo_handler)
-
-
 # end loop of polling stopping and again.
 # It seems that way I can read other bots messages in groups
 # which is impossible other way
