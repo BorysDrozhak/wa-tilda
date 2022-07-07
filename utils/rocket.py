@@ -39,23 +39,23 @@ Bolt Total =
 def parse_rocket_fmt(text):
     # take copy past list from rocket app and convert to meaningful info
     if "arrow_right_alt" not in text:
-        return 'No Rocket orders passed'
+        return "No Rocket orders passed"
 
     l = []
     for i in text.split("\n"):
         if (
-            len(i) >= 7 and
-            'UAH' not in i and
-            ' ' not in i.rstrip(' ')
-            and 'arrow' not in i
-            and ':' not in i
-            and '.' not in i
-            and 'money' not in i
-            and 'credit_card' not in i
-        ) or '№' in i:
+            len(i) >= 7
+            and "UAH" not in i
+            and " " not in i.rstrip(" ")
+            and "arrow" not in i
+            and ":" not in i
+            and "." not in i
+            and "money" not in i
+            and "credit_card" not in i
+        ) or "№" in i:
             l.append({"price": 0, "type": ""})
         elif "UAH" in i:
-            l[-1]["price"] = float(i.split(" ")[0].replace(',', ''))
+            l[-1]["price"] = float(i.split(" ")[0].replace(",", ""))
         elif "money" in i or "credit_card" in i:
             l[-1]["type"] = i
 
@@ -70,13 +70,17 @@ def parse_rocket_fmt(text):
     total["credit_card"] = round(total["credit_card"], 2)
     total["total"] = round(total["credit_card"] + total["cash"], 2)
 
-    return f'''Rocket Кеш = {total["cash"]}
-Rocket Безнал = {total["credit_card"]}
-Rocket Total = {total["total"]}'''
+    #     return f'''Rocket Кеш = {total["cash"]}
+    # Rocket Безнал = {total["credit_card"]}
+    # Rocket Total = {total["total"]}'''
+
+    return f"""Rocket Кеш = 0
+Rocket Безнал = 0
+Rocket Total = 0"""
 
 
 def parse_number_in_zvit(line):
-    return float(line.split('=')[1].strip().split(' ')[0].replace(',','.'))
+    return float(line.split("=")[1].strip().split(" ")[0].replace(",", "."))
 
 
 def parse_total_kassa(text):
@@ -88,9 +92,9 @@ def parse_total_kassa(text):
     rocket_passed = False
     terminal_total = 0
     z_zvit = 0
-    for line in text.split('\n'):
+    for line in text.split("\n"):
         if "Каса 202" in line:
-            name = line.strip('.')
+            name = line.strip(".")
         elif "Загально =" in line or "Total =" in line:
             total += parse_number_in_zvit(line)
         elif "Ресторан =" in line:
@@ -127,31 +131,33 @@ def parse_total_kassa(text):
     elif delta > 0:
         alarm = True
 
-    new_records = ''
+    new_records = ""
     top_delivery = 21155
-    top_delivery_date = '13.01.21'
+    top_delivery_date = "13.01.21"
     top_resto = 31845
-    top_resto_date = '26.12'
+    top_resto_date = "26.12"
 
     if total_delivery > top_delivery:
-        new_records += f'\nВав! Новий рекорд на доставці! Був {top_delivery} {top_delivery_date}, а тепер {total_delivery}'
+        new_records += (
+            f"\nВав! Новий рекорд на доставці! Був {top_delivery} {top_delivery_date}, а тепер {total_delivery}"
+        )
     if total_resto > top_resto:
-        new_records += f'\nВав! Новий рекорд в залі ретсорану! Був {top_resto} {top_resto_date}, а тепер {total_resto}'
-
+        new_records += f"\nВав! Новий рекорд в залі ретсорану! Був {top_resto} {top_resto_date}, а тепер {total_resto}"
 
     if total > 40000:
-        congrats = f'\n\nЕй Йоу! Рілі???? О_О. ВАУ! Я хоч і бот в телеграмі, але вас дуже люблю <3'
+        congrats = f"\n\nЕй Йоу! Рілі???? О_О. ВАУ! Я хоч і бот в телеграмі, але вас дуже люблю <3"
     elif total > 30000:
-        congrats = f'\n\nНу і пупсики!! Вау Вау Вау'
+        congrats = f"\n\nНу і пупсики!! Вау Вау Вау"
     elif total > 15000:
-        congrats = f'\n\nВав! Маю надію ви всі добре почуваєтесь, бережіть себе і будьте бережні, як будете їхати додомку ❤️'
+        congrats = (
+            f"\n\nВав! Маю надію ви всі добре почуваєтесь, бережіть себе і будьте бережні, як будете їхати додомку ❤️"
+        )
     elif total > 12000:
-        congrats = f'\n\nНепогано, але для лютого :) Певен, ви можете ліпше 🤗'
+        congrats = f"\n\nНепогано, але для лютого :) Певен, ви можете ліпше 🤗"
     else:
         congrats = ""
 
-
-    tip_check = ''
+    tip_check = ""
     if tips != 0:
         tip_check = f"\nчай: {tips}?"
     elif alarm:
