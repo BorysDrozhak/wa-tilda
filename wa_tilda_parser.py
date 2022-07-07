@@ -7,6 +7,7 @@ import re
 import traceback
 import random
 import pytz
+import telegram
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Filters, MessageFilter, MessageHandler, Updater, CommandHandler
@@ -49,6 +50,9 @@ if getpass.getuser() == "bdrozhak":
 elif getpass.getuser() == "andrii":
     tok = a_bot
     env = 'dev'
+
+bot = telegram.Bot(token=tok)
+bot.send_message(chat_id=operations_channel, text='Введіть будь ласка /daily_poll у вікні бота')
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -270,11 +274,7 @@ def create_poll(update, context):
         poll_data['questions'],
         is_anonymous=False,
         allows_multiple_answers=False,
-    )
-    context.bot.send_message(
-        chat_id=operations_channel,
-        text="Дякую!",
-        reply_markup=ReplyKeyboardRemove()
+        reply_markup=ReplyKeyboardRemove(),
     )
     state_obj.reset()
 
