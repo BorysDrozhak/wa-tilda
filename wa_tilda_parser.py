@@ -52,7 +52,8 @@ elif getpass.getuser() == "andrii":
     env = 'dev'
 
 bot = telegram.Bot(token=tok)
-bot.send_message(chat_id=operations_channel, text='Введіть будь ласка /daily_poll у вікні бота')
+bot.send_message(chat_id=operations_channel, text='''Наш ВА бот був успішно перегружений.
+Будь ласка, введіть /daily_poll в вікні бота @WALvivBot, щоб запроцювали командні челенджі''')
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
