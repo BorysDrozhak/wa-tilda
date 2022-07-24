@@ -277,7 +277,10 @@ def poll_cancel(update, context):
 
 def create_poll(update, context):
     """Sends a predefined poll"""
-    poll_data = random.choice(POLLS)
+    todays_date = datetime.date.today()
+    day_in_year = todays_date.day
+    poll_index = day_in_year - len(POLLS) * (day_in_year // len(POLLS))
+    poll_data = POLLS[poll_index]
     message = context.bot.send_poll(
         update.effective_chat.id,
         poll_data['title'],
