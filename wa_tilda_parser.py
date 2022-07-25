@@ -7,6 +7,7 @@ import re
 import traceback
 import random
 import pytz
+import telegram
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Filters, MessageFilter, MessageHandler, Updater, CommandHandler
@@ -27,7 +28,7 @@ channels = [waiters_channel, site_orders_channel, cash_flow_channel, cash_flow_c
 b = "AAFiYwWlbJwvUhbwV"
 c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by mere people on windows man
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                     level=logging.INFO)
+                    level=logging.INFO)
 a = "165506622"
 tok = a + "2" + ':' + b + c
 
@@ -49,6 +50,10 @@ if getpass.getuser() == "bdrozhak":
 elif getpass.getuser() == "andrii":
     tok = a_bot
     env = 'dev'
+
+bot = telegram.Bot(token=tok)
+bot.send_message(chat_id=operations_channel, text='''Наш ВА бот був успішно перегружений.
+Будь ласка, введіть /daily_poll в вікні бота @WALvivBot, щоб запроцювали командні челенджі''')
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -221,18 +226,24 @@ Bolt Total =
 class FilterOrder(MessageFilter):
     def filter(self, message):
         return 'Заказ #' in message.text
+
+
 filter_order = FilterOrder()
 
 
 class FilterRocket(MessageFilter):
     def filter(self, message):
         return 'arrow_right_alt' in message.text
+
+
 filter_rocket = FilterRocket()
 
 
 class FilterZvit(MessageFilter):
     def filter(self, message):
         return 'Каса 202' in message.text
+
+
 filter_zvit = FilterZvit()
 
 
@@ -240,6 +251,8 @@ class FilterKasa(MessageFilter):
     def filter(self, message):
         text = message.text.lower()
         return 'каса' in text and not "202" in text
+
+
 filter_kasa = FilterKasa()
 
 order_handler = MessageHandler(filter_order, send_parsed_order)
@@ -261,22 +274,23 @@ def poll_cancel(update, context):
         reply_markup=ReplyKeyboardRemove()
     )
 
+
 def create_poll(update, context):
     """Sends a predefined poll"""
-    poll_data = random.choice(POLLS)
+    todays_date = datetime.date.today()
+    day_in_year = todays_date.day
+    poll_index = day_in_year - len(POLLS) * (day_in_year // len(POLLS))
+    poll_data = POLLS[poll_index]
     message = context.bot.send_poll(
         update.effective_chat.id,
         poll_data['title'],
         poll_data['questions'],
         is_anonymous=False,
         allows_multiple_answers=False,
-    )
-    context.bot.send_message(
-        chat_id=operations_channel,
-        text="Дякую!",
-        reply_markup=ReplyKeyboardRemove()
+        reply_markup=ReplyKeyboardRemove(),
     )
     state_obj.reset()
+
 
 #  run job for daily poll
 def callback_daily(context):
@@ -287,15 +301,20 @@ def callback_daily(context):
 #  create queue for daily running jobs
 def set_daily_message(update, context):
     chat_id = update.message.chat_id
-    context.job_queue.run_daily(callback_daily, time=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone('Europe/Kiev')),
+    context.job_queue.run_daily(callback_daily,
+                                time=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone('Europe/Kiev')),
                                 days=(0, 1, 2, 3, 4, 5, 6), context=chat_id, name=str(chat_id))
+    context.bot.send_message(chat_id=operations_channel,
+                             text='Дякую, тепер челенджі будуть працювати! Продуктивного дня вам там! 😌')
+
 
 #  stop daily jobs
 def stop_daily(update, context):
     chat_id = update.message.chat_id
     context.bot.send_message(chat_id=chat_id,
-                      text='Stoped!')
+                             text='Stoped!')
     context.job_queue.stop()
+
 
 dispatcher.add_handler(CommandHandler("daily_poll", set_daily_message, pass_job_queue=True))
 dispatcher.add_handler(CommandHandler('stop_daily', stop_daily, pass_job_queue=True))
@@ -310,6 +329,7 @@ def echo(update, context):
     chat_id = update.effective_chat.id
     print(update.message.text)
     print("chart_id: " + str(chat_id))
+
 
 echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
 dispatcher.add_handler(echo_handler)
