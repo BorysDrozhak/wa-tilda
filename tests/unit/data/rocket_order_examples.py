@@ -114,9 +114,9 @@ example_total1 = '''Каса 2021-05-13.
 
 LiqPay доставки = 2330 грн
 
-Rocket Кеш = 723.8
-Rocket Безнал = 1015.7
-Rocket Total = 1739.5
+Flashback Кеш = 723.8
+Flashback Безнал = 1015.7
+Flashback Total = 1739.5
 
 Готівка в касі: 4114
 '''
@@ -138,9 +138,9 @@ example_total2 = '''Каса 2021-06-03.
 
 LiqPay доставки = 639
 
-Rocket Кеш = 1557.3
-Rocket Безнал = 4001.0
-Rocket Total = 5558.3
+Flashback Кеш = 1557.3
+Flashback Безнал = 4001.0
+Flashback Total = 5558.3
 
 Glovo Кеш = 90
 Glovo Безнал = 10
@@ -173,9 +173,9 @@ example_total3 = '''Каса 2021-06-03.
 
 LiqPay доставки = 63009
 
-Rocket Кеш = 1557.3
-Rocket Безнал = 44001.0
-Rocket Total = 49559.3
+Flashback Кеш = 1557.3
+Flashback Безнал = 44001.0
+Flashback Total = 49559.3
 
 Bolt Кеш = 1
 Bolt Безнал = 1
