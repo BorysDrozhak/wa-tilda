@@ -7,9 +7,9 @@ from utils.rocket import parse_rocket_fmt, parse_total_kassa
 
 
 def test_example1():
-    assert parse_rocket_fmt(example1) == '''Rocket Кеш = 0
-Rocket Безнал = 0
-Rocket Total = 0'''
+    assert parse_rocket_fmt(example1) == '''Flashback Кеш = 0
+Flashback Безнал = 0
+Flashback Total = 0'''
 
 
 def test_total_tip():
