@@ -27,10 +27,9 @@ channels = [waiters_channel, site_orders_channel, cash_flow_channel, cash_flow_c
 
 b = "AAFiYwWlbJwvUhbwV"
 c = "Zgu_caRA7oHMIp67a8"  # do not even ask why. it is gonna be used by mere people on windows man
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 a = "165506622"
-tok = a + "2" + ':' + b + c
+tok = a + "2" + ":" + b + c
 
 d = "1700108054:A"
 f = "AFsN_Agk1G5eyh19Dxqdn_jrPmuW60Zy5"
@@ -41,19 +40,22 @@ a_2 = "AGHqh_IFd1li2aVxNBHVqx7WaCVHqqHwN"
 
 a_bot = a_1 + a_2 + "I"
 
-env = 'prod'
+env = "prod"
 
 if getpass.getuser() == "bdrozhak":
     tok = b_bot
-    env = 'dev'
+    env = "dev"
 
 elif getpass.getuser() == "andrii":
     tok = a_bot
-    env = 'dev'
+    env = "dev"
 
 bot = telegram.Bot(token=tok)
-bot.send_message(chat_id=operations_channel, text='''Наш ВА бот був успішно перегружений.
-Будь ласка, введіть /daily_poll в вікні бота @WALvivBot, щоб запроцювали командні челенджі''')
+bot.send_message(
+    chat_id=operations_channel,
+    text="""Наш ВА бот був успішно перегружений.
+Будь ласка, введіть /daily_poll в вікні бота @WALvivBot, щоб запроцювали командні челенджі""",
+)
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -62,24 +64,24 @@ dispatcher = updater.dispatcher
 def send_parsed_order(update, context):
     chat_id = update.effective_chat.id
     print("chart_id: " + str(chat_id))
-    err = ''
-    text_for_client = ''
+    err = ""
+    text_for_client = ""
     try:
         text, text_for_client = parse_order(update.message.text)
     except Exception as e:
         err = e
         text = str(traceback.format_exc())
-        text = text + '\n\n Borys will have a look ;)'
-    if str(chat_id) not in channels and env == 'prod':
-        text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
+        text = text + "\n\n Borys will have a look ;)"
+    if str(chat_id) not in channels and env == "prod":
+        text = re.sub(r"^https?:\/\/.*[\r\n]*", "", text, flags=re.MULTILINE)
         context.bot.send_message(
             chat_id=site_orders_channel,
             text=text,
         )
-    if err != '':
+    if err != "":
         # if error happen, make it string and send it
         text = text
-        text_for_client = ''
+        text_for_client = ""
     else:
         # removing https links when sending them to main chat
         pass
@@ -101,13 +103,13 @@ def send_parsed_order(update, context):
 def send_parse_rocket(update, context):
     chat_id = update.effective_chat.id
     print(str(chat_id))
-    err = ''
+    err = ""
     try:
         text = parse_rocket(update.message.text)
     except Exception as e:
         err = e
         text = str(traceback.format_exc())
-        text = text + '\n\n Borys will have a look ;)'
+        text = text + "\n\n Borys will have a look ;)"
 
     context.bot.send_message(
         chat_id=chat_id,
@@ -120,13 +122,13 @@ def send_parse_rocket(update, context):
 
 def send_parse_zvit(update, context):
     chat_id = update.effective_chat.id
-    err = ''
+    err = ""
     try:
         text = parse_total_kassa(update.message.text)
     except Exception as e:
         err = e
         text = str(traceback.format_exc())
-        text = text + '\n\n Borys will have a look ;)'
+        text = text + "\n\n Borys will have a look ;)"
     if str(chat_id) not in channels:
         context.bot.send_message(
             chat_id=-447482461,
@@ -141,16 +143,16 @@ def send_parse_zvit(update, context):
     )
     tips = 0.0
     total_resto = 0.0
-    for line in text.split('\n'):
+    for line in text.split("\n"):
         if "чай: " in line:
-            tips = float(line.split(' ')[1].rstrip('?'))
+            tips = float(line.split(" ")[1].rstrip("?"))
         elif "Зал ресторану: " in line:
-            total_resto = float(line.split(' ')[2])
+            total_resto = float(line.split(" ")[2])
 
     if tips:
         extra_text = f"не забудьте екстра чаєві через термінал: {tips}"
     else:
-        extra_text = ''
+        extra_text = ""
 
     if total_resto < 1:
         return
@@ -166,15 +168,13 @@ def send_parse_zvit(update, context):
     context.bot.send_message(
         chat_id=operations_channel,
         text=(
-            "Good job team. Kind reminder for the end of the shift\n\n"
-            "- Фоткаємо дошку з фідбеком\n"
-            "- Закриваємо зміни\n"
+            "Люблю вас пупсики. незабудьте про\n\n"
             "- Cвітло на складі та кухні\n"
-            "- Виключаємо чекодрук, принтер та кондиціонер\n"
+            "- Кондиціонер\n"
             "- Прибираємо робочі місця\n"
-            "- Перевіряємо заряд батереї на обох робочих телефонах та планшеті\n"
-            "- Металеві двері для входу курєрів та постачальників закриваємо\n"
-            "- Вимикаємо термінал\n"
+            "- Телефонах та планшет зарядка\n"
+            "- Закриваємо металеві двері\n"
+            "- Термінал виключаєм\n"
             "- Маркізу та ліхтарики на ній скручуємо і вимикаєм\n"
         ),
     )
@@ -225,7 +225,7 @@ Bolt Total =
 
 class FilterOrder(MessageFilter):
     def filter(self, message):
-        return 'Заказ #' in message.text
+        return "Заказ #" in message.text
 
 
 filter_order = FilterOrder()
@@ -233,7 +233,7 @@ filter_order = FilterOrder()
 
 class FilterRocket(MessageFilter):
     def filter(self, message):
-        return 'arrow_right_alt' in message.text
+        return "arrow_right_alt" in message.text
 
 
 filter_rocket = FilterRocket()
@@ -241,7 +241,7 @@ filter_rocket = FilterRocket()
 
 class FilterZvit(MessageFilter):
     def filter(self, message):
-        return 'Каса 202' in message.text
+        return "Каса 202" in message.text
 
 
 filter_zvit = FilterZvit()
@@ -250,7 +250,7 @@ filter_zvit = FilterZvit()
 class FilterKasa(MessageFilter):
     def filter(self, message):
         text = message.text.lower()
-        return 'каса' in text and not "202" in text
+        return "каса" in text and not "202" in text
 
 
 filter_kasa = FilterKasa()
@@ -268,11 +268,7 @@ dispatcher.add_handler(kasa_handler)
 # daily poll job
 def poll_cancel(update, context):
     state_obj.reset()
-    context.bot.send_message(
-        chat_id=operations_channel,
-        text="Дякую!",
-        reply_markup=ReplyKeyboardRemove()
-    )
+    context.bot.send_message(chat_id=operations_channel, text="Дякую!", reply_markup=ReplyKeyboardRemove())
 
 
 def create_poll(update, context):
@@ -283,8 +279,8 @@ def create_poll(update, context):
     poll_data = POLLS[poll_index]
     message = context.bot.send_poll(
         update.effective_chat.id,
-        poll_data['title'],
-        poll_data['questions'],
+        poll_data["title"],
+        poll_data["questions"],
         is_anonymous=False,
         allows_multiple_answers=False,
         reply_markup=ReplyKeyboardRemove(),
@@ -295,32 +291,46 @@ def create_poll(update, context):
 #  run job for daily poll
 def callback_daily(context):
     state_obj.generate()
-    context.bot.send_message(chat_id=operations_channel, text='Запустити Командний челендж?',
-                             reply_markup=ReplyKeyboardMarkup(BUTTONS, resize_keyboard=True, one_time_keyboard=True))
+    context.bot.send_message(
+        chat_id=operations_channel,
+        text="Запустити Командний челендж?",
+        reply_markup=ReplyKeyboardMarkup(BUTTONS, resize_keyboard=True, one_time_keyboard=True),
+    )
+
 
 #  create queue for daily running jobs
 def set_daily_message(update, context):
     chat_id = update.message.chat_id
-    context.job_queue.run_daily(callback_daily,
-                                time=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone('Europe/Kiev')),
-                                days=(0, 1, 2, 3, 4, 5, 6), context=chat_id, name=str(chat_id))
-    context.bot.send_message(chat_id=operations_channel,
-                             text='Дякую, тепер челенджі будуть працювати! Продуктивного дня вам там! 😌')
+    context.job_queue.run_daily(
+        callback_daily,
+        time=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone("Europe/Kiev")),
+        days=(0, 1, 2, 3, 4, 5, 6),
+        context=chat_id,
+        name=str(chat_id),
+    )
+    context.bot.send_message(
+        chat_id=operations_channel, text="Дякую, тепер челенджі будуть працювати! Продуктивного дня вам там! 😌"
+    )
 
 
 #  stop daily jobs
 def stop_daily(update, context):
     chat_id = update.message.chat_id
-    context.bot.send_message(chat_id=chat_id,
-                             text='Stoped!')
+    context.bot.send_message(chat_id=chat_id, text="Stoped!")
     context.job_queue.stop()
 
 
 dispatcher.add_handler(CommandHandler("daily_poll", set_daily_message, pass_job_queue=True))
-dispatcher.add_handler(CommandHandler('stop_daily', stop_daily, pass_job_queue=True))
-poll_handler = MessageHandler(filter_generate, create_poll, )
+dispatcher.add_handler(CommandHandler("stop_daily", stop_daily, pass_job_queue=True))
+poll_handler = MessageHandler(
+    filter_generate,
+    create_poll,
+)
 dispatcher.add_handler(poll_handler)
-cancel_poll_handler = MessageHandler(filter_cancel, poll_cancel, )
+cancel_poll_handler = MessageHandler(
+    filter_cancel,
+    poll_cancel,
+)
 dispatcher.add_handler(cancel_poll_handler)
 
 
