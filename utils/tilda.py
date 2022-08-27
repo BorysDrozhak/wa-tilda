@@ -136,7 +136,7 @@ def parse_order(text):
             if info == 'yes':
                 client_nocall = 'NO CALL'
         elif param == 'Fast_order':
-            fast_order = 'Fast order : Yes'
+            fast_order = 'FAST ORDER'
         else:
             other += line
     if not other:
