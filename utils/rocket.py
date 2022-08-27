@@ -166,8 +166,8 @@ def parse_total_kassa(text):
         tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
 
     return (
-        f"{name} - Разом: {total}"
-        f"\nДоставка: {total_delivery}"
-        f"\nЗал ресторану: {total_resto}"
+        f"{name} - Разом: {int(total)}"
+        f"\nДоставка: {int(total_delivery)}"
+        f"\nЗал ресторану: {int(total_resto)}"
         f"{tip_check}{congrats}{new_records}"
     )

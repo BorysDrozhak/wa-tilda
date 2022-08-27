@@ -74,7 +74,7 @@ def parse_order(text):
     client_nocall, client_address = None, ''
     client_name, client_phone = None, None
     delivery_zone, total_order_price, order_type = None, None, None
-    client_comment, persons, client_no_need = None, None, None
+    client_comment, persons, client_no_need, fast_order = None, None, None, None
     result_order_block, other, utm = None, None, None
     do_not_know_zones, self_delivery = False, False
     promocode = None
@@ -132,9 +132,11 @@ def parse_order(text):
             persons = "Для: " + info
         elif param == 'Комент:' or param == 'Comment' or param == 'comment':
             client_comment = "Comment: " + info
-        elif param == 'НЕдзвонити-НАПИСАТИ':
+        elif param == 'НЕдзвонити-НАПИСАТИ' or param == 'no-call':
             if info == 'yes':
                 client_nocall = 'NO CALL'
+        elif param == 'Fast_order':
+            fast_order = 'Fast order : Yes'
         else:
             other += line
     if not other:
@@ -221,6 +223,8 @@ def parse_order(text):
         client_no_need = ''
     else:
         client_no_need += '\n'
+    if not fast_order:
+        fast_order = ''
 
     if not promocode:
         promocode = ''
@@ -247,6 +251,7 @@ def parse_order(text):
 {total_order_price}  ({order_type})
 {persons}
 {client_comment}{client_no_need}
+{fast_order}
 {other}
 ----
 {result_order_block}
