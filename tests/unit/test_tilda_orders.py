@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from tests.unit.data.tilda_orders import (answer1, answer2, answer3, answer4,
-                                          example1, example2, example3,
-                                          example4)
+from tests.unit.data.tilda_orders import (answer1, answer2, answer3, answer4, answer5,
+                                          example1, example2, example3, example4,
+                                          example5)
 from utils.tilda import parse_order
 
 
@@ -14,6 +14,7 @@ from utils.tilda import parse_order
         (example2, answer2),
         (example3, answer3),
         (example4, answer4),
+        (example5, answer5),
     ],
 )
 def test_example(tilda_order, parsed_answer):
