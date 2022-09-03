@@ -54,7 +54,7 @@ bot = telegram.Bot(token=tok)
 bot.send_message(
     chat_id=operations_channel,
     text="""Наш ВА бот був успішно перегружений.
-Будь ласка, введіть /daily_poll в вікні бота @WALvivBot, щоб запроцювали командні челенджі""",
+Будь ласка, клікніть /daily_poll, щоб запроцювали командні челенджі""",
 )
 
 updater = Updater(token=tok, use_context=True)
