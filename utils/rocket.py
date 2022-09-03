@@ -2,6 +2,26 @@
 
 import datetime
 
+from pywttr import Wttr
+
+from utils.poll_data import weather_smiles
+
+wttr = Wttr("Lviv")
+forecast = wttr.en()
+
+
+def get_weather():
+    morning_weather, evening_weather = None, None
+    weather_data = forecast.weather[0]
+    if weather_data:
+        morning_weather = weather_data.hourly[3].weather_desc[0].value
+        evening_weather = weather_data.hourly[7].weather_desc[0].value
+    if morning_weather and evening_weather:
+        morning_weather_smile = weather_smiles.get(morning_weather)
+        evening_weather_smile = weather_smiles.get(evening_weather)
+        return f"9:00 : {morning_weather_smile if morning_weather_smile else morning_weather}," \
+               f" 21:00 : {evening_weather_smile if evening_weather_smile else evening_weather}"
+    return None
 
 def parse_rocket(text):
     return f"""
@@ -169,5 +189,6 @@ def parse_total_kassa(text):
         f"{name} - Разом: {int(total)}"
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
-        f"{tip_check}{congrats}{new_records}"
+        f"{tip_check}{congrats}{new_records}\n"
+        f"{get_weather()}"
     )
