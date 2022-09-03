@@ -4,7 +4,7 @@ import datetime
 
 from pywttr import Wttr
 
-from utils.poll_data import weather_smiles, convert_time
+from utils.poll_data import weather_smiles
 
 wttr = Wttr("Lviv")
 forecast = wttr.en()
@@ -21,12 +21,12 @@ def get_weather():
         return None
 
     for hour in weather_data.hourly:
-        if not convert_time.get(hour.time):
+        if hour.time not in ['900', '1200', '1500', '1800', '2100']:
             # only specific time choosen
             continue
 
         weather_description.append({
-            'time': convert_time.get(hour.time),
+            'time': hour.time.rstrip('00'),
             'weather_desc': hour.weather_desc[0].value,
             'feels': hour.feels_like_c
         })
