@@ -4,23 +4,31 @@ import datetime
 
 from pywttr import Wttr
 
-from utils.poll_data import weather_smiles
+from utils.poll_data import weather_smiles, convert_time
 
 wttr = Wttr("Lviv")
 forecast = wttr.en()
 
 
 def get_weather():
-    morning_weather, evening_weather = None, None
-    weather_data = forecast.weather[0]
+    weather_description = []
+    weather_string = ''
+    try:
+        weather_data = forecast.weather[0]
+    except:
+        return None
     if weather_data:
-        morning_weather = weather_data.hourly[3].weather_desc[0].value
-        evening_weather = weather_data.hourly[7].weather_desc[0].value
-    if morning_weather and evening_weather:
-        morning_weather_smile = weather_smiles.get(morning_weather)
-        evening_weather_smile = weather_smiles.get(evening_weather)
-        return f"9:00 : {morning_weather_smile if morning_weather_smile else morning_weather}," \
-               f" 21:00 : {evening_weather_smile if evening_weather_smile else evening_weather}"
+        for hour in weather_data.hourly:
+            if convert_time.get(hour.time):
+                weather_description.append({
+                    'time': convert_time.get(hour.time),
+                    'weather_desc': hour.weather_desc[0].value
+                })
+    if weather_description:
+        for wd in weather_description:
+            weather_smile = weather_smiles.get(wd.get('weather_desc'))
+            weather_string += f"{wd.get('time')} {weather_smile if weather_smile else wd.get('weather_desc')} "
+        return weather_string
     return None
 
 def parse_rocket(text):
