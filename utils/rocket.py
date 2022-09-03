@@ -17,23 +17,30 @@ def get_weather():
         weather_data = forecast.weather[0]
     except:
         return None
-    if weather_data:
-        for hour in weather_data.hourly:
-            if convert_time.get(hour.time):
-                weather_description.append({
-                    'time': convert_time.get(hour.time),
-                    'weather_desc': hour.weather_desc[0].value,
-                    'feels': hour.feels_like_c
-                })
-    if weather_description:
-        for wd in weather_description:
-            weather_smile = weather_smiles.get(wd.get('weather_desc'))
-            emoji = weather_smile if weather_smile else wd.get('weather_desc')
-            time = wd.get('time')
-            temp = wd.get('feels')
-            weather_string += f"{time}{emoji} {temp}C "
-        return weather_string
-    return None
+    if not weather_data:
+        return None
+
+    for hour in weather_data.hourly:
+        if not convert_time.get(hour.time):
+            # only specific time choosen
+            continue
+
+        weather_description.append({
+            'time': convert_time.get(hour.time),
+            'weather_desc': hour.weather_desc[0].value,
+            'feels': hour.feels_like_c
+        })
+    if not weather_description:
+        return None
+
+    for wd in weather_description:
+        weather_smile = weather_smiles.get(wd.get('weather_desc'))
+        emoji = weather_smile if weather_smile else wd.get('weather_desc')
+        time = wd.get('time')
+        temp = wd.get('feels')
+        weather_string += f"{time}{emoji} {temp}C "
+    return weather_string
+
 
 def parse_rocket(text):
     return f"""
