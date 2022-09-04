@@ -4,7 +4,7 @@ import datetime
 
 from pywttr import Wttr
 
-from utils.poll_data import weather_smiles, convert_time
+from utils.poll_data import weather_smiles
 
 wttr = Wttr("Lviv")
 forecast = wttr.en()
@@ -17,19 +17,30 @@ def get_weather():
         weather_data = forecast.weather[0]
     except:
         return None
-    if weather_data:
-        for hour in weather_data.hourly:
-            if convert_time.get(hour.time):
-                weather_description.append({
-                    'time': convert_time.get(hour.time),
-                    'weather_desc': hour.weather_desc[0].value
-                })
-    if weather_description:
-        for wd in weather_description:
-            weather_smile = weather_smiles.get(wd.get('weather_desc'))
-            weather_string += f"{wd.get('time')} {weather_smile if weather_smile else wd.get('weather_desc')} "
-        return weather_string
-    return None
+    if not weather_data:
+        return None
+
+    for hour in weather_data.hourly:
+        if hour.time not in ['900', '1200', '1500', '1800', '2100']:
+            # only specific time choosen
+            continue
+
+        weather_description.append({
+            'time': hour.time.rstrip('00'),
+            'weather_desc': hour.weather_desc[0].value,
+            'feels': hour.feels_like_c
+        })
+    if not weather_description:
+        return None
+
+    for wd in weather_description:
+        weather_smile = weather_smiles.get(wd.get('weather_desc'))
+        emoji = weather_smile if weather_smile else wd.get('weather_desc')
+        time = wd.get('time')
+        temp = wd.get('feels')
+        weather_string += f"{time}{emoji} {temp}C "
+    return weather_string
+
 
 def parse_rocket(text):
     return f"""
