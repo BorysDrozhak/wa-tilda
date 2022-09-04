@@ -136,7 +136,7 @@ weather_smiles = {
     'Cloudy': '☁️',
     'Mist': '😶‍🌫️',
     'Sunny': '☀️',
-    'Clear': '☀️',
+    'Clear': '🌃',
     'Rainy': '🌧',
     'Windy': '🌬',
     'Snowy': '🌨',

@@ -38,7 +38,7 @@ def get_weather():
         emoji = weather_smile if weather_smile else wd.get('weather_desc')
         time = wd.get('time')
         temp = wd.get('feels')
-        weather_string += f"{time}{emoji} {temp}C "
+        weather_string += f"{time}{emoji}({temp}C) "
     return weather_string
 
 
