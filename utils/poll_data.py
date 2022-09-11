@@ -126,18 +126,3 @@ POLLS = [
 
 
 BUTTONS = [["Так, звісно", "Пропустити"]]
-
-weather_smiles = {
-    'Partly cloudy': '🌤',
-    'Overcast': '🌥',
-    'Light drizzle': '🌦',
-    'Light rain': '🌦',
-    'Patchy rain possible': '🌦',
-    'Cloudy': '☁️',
-    'Mist': '😶‍🌫️',
-    'Sunny': '☀️',
-    'Clear': '🌃',
-    'Rainy': '🌧',
-    'Windy': '🌬',
-    'Snowy': '🌨',
-}
