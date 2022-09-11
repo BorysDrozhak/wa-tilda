@@ -2,44 +2,8 @@
 
 import datetime
 
-from pywttr import Wttr
-
-from utils.poll_data import weather_smiles
-
-wttr = Wttr("Lviv")
-forecast = wttr.en()
-
-
-def get_weather():
-    weather_description = []
-    weather_string = ''
-    try:
-        weather_data = forecast.weather[0]
-    except:
-        return None
-    if not weather_data:
-        return None
-
-    for hour in weather_data.hourly:
-        if hour.time not in ['900', '1200', '1500', '1800', '2100']:
-            # only specific time choosen
-            continue
-
-        weather_description.append({
-            'time': hour.time.rstrip('00'),
-            'weather_desc': hour.weather_desc[0].value,
-            'feels': hour.feels_like_c
-        })
-    if not weather_description:
-        return None
-
-    for wd in weather_description:
-        weather_smile = weather_smiles.get(wd.get('weather_desc'))
-        emoji = weather_smile if weather_smile else wd.get('weather_desc')
-        time = wd.get('time')
-        temp = wd.get('feels')
-        weather_string += f"{time}{emoji}({temp}C) "
-    return weather_string
+from utils.csv_writer import write_daily_zvit
+from utils.weather import get_whether_forecast
 
 
 def parse_rocket(text):
@@ -118,7 +82,7 @@ def parse_number_in_zvit(line):
     return float(line.split("=")[1].strip().split(" ")[0].replace(",", "."))
 
 
-def parse_total_kassa(text):
+def parse_total_kassa(text, env):
     total = 0.0
     total_delivery = 0.0
     total_resto = 0.0
@@ -127,6 +91,7 @@ def parse_total_kassa(text):
     # rocket_passed = False
     terminal_total = 0
     z_zvit = 0
+    data = []
     for line in text.split("\n"):
         if "Каса 202" in line:
             name = line.strip(".")
@@ -158,6 +123,11 @@ def parse_total_kassa(text):
         if "Shake to pay" in line:
             total_resto += parse_number_in_zvit(line)
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
+    data.extend(
+        [datetime.date.today(), total_resto, total_delivery, total]
+    )
+    if data:
+        write_daily_zvit(data, env)
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
@@ -209,5 +179,5 @@ def parse_total_kassa(text):
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
         f"{tip_check}{congrats}{new_records}\n"
-        f"{get_weather()}"
+        f"{get_whether_forecast()}"
     )
