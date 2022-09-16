@@ -26,7 +26,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-.idea
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -131,6 +130,3 @@ dmypy.json
 
 
 anon.session
-
-wa_history.csv
-.tests/unit/wa_history.csv
