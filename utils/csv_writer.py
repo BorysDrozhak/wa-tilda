@@ -8,7 +8,7 @@ headers = ['date', 'total_resto', 'total_delivery', 'total']
 def write_daily_zvit(data, env):
     try:
         if env == 'prod':
-            filename = '/home/WA.Lviv/wa_history.csv'
+            filename = 'C:/Users/WA.Lviv/wa_history.csv'
             file_exists = os.path.isfile(filename)
             with open(filename, 'a', encoding='UTF8') as f:
                 writer = csv.DictWriter(f, delimiter=',', lineterminator='\n', fieldnames=headers)
