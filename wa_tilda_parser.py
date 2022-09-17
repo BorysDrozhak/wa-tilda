@@ -5,17 +5,18 @@ import getpass
 import logging
 import re
 import traceback
-import random
 import pytz
-import telegram
 
+import telegram
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Filters, MessageFilter, MessageHandler, Updater, CommandHandler
+
 from utils.rocket import parse_rocket, parse_total_kassa
 from utils.tilda import parse_order
 from utils.poll_data import POLLS, BUTTONS
 from utils.filters import filter_generate, filter_cancel
 from utils.states import state_obj
+from utils.weather import save_weather
 
 waiters_channel = "-1001792566598"
 site_orders_channel = "-1001353838635"
@@ -50,12 +51,13 @@ elif getpass.getuser() == "andrii":
     tok = a_bot
     env = "dev"
 
-bot = telegram.Bot(token=tok)
-bot.send_message(
-    chat_id=operations_channel,
-    text="""Наш ВА бот був успішно перегружений.
-Будь ласка, клікніть /daily_poll, щоб запроцювали командні челенджі""",
-)
+if env == "prod":
+    bot = telegram.Bot(token=tok)
+    bot.send_message(
+        chat_id=operations_channel,
+        text="""Наш ВА бот був успішно перегружений.
+    Будь ласка, клікніть /daily_poll, щоб запрацювали командні челенджі""",
+    )
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -124,17 +126,17 @@ def send_parse_zvit(update, context):
     chat_id = update.effective_chat.id
     err = ""
     try:
-        text = parse_total_kassa(update.message.text)
+        text = parse_total_kassa(update.message.text, env)
     except Exception as e:
         err = e
         text = str(traceback.format_exc())
         text = text + "\n\n Borys will have a look ;)"
-    if str(chat_id) not in channels:
-        context.bot.send_message(
-            chat_id=-447482461,
-            text=text,
-            # parse_mode='HTML'
-        )
+    # if str(chat_id) not in channels:
+    #     context.bot.send_message(
+    #         chat_id=-447482461,
+    #         text=text,
+    #         # parse_mode='HTML'
+    #     )
 
     context.bot.send_message(
         chat_id=chat_id,
@@ -298,6 +300,10 @@ def callback_daily(context):
     )
 
 
+def callback_repeating(context):
+    save_weather()
+
+
 #  create queue for daily running jobs
 def set_daily_message(update, context):
     chat_id = update.message.chat_id
@@ -311,6 +317,7 @@ def set_daily_message(update, context):
     context.bot.send_message(
         chat_id=operations_channel, text="Дякую, тепер челенджі будуть працювати! Продуктивного дня вам там! 😌"
     )
+    context.job_queue.run_repeating(callback_repeating, interval=10800, context=None, name='Daily weather')
 
 
 #  stop daily jobs
