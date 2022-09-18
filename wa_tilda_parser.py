@@ -131,12 +131,12 @@ def send_parse_zvit(update, context):
         err = e
         text = str(traceback.format_exc())
         text = text + "\n\n Borys will have a look ;)"
-    # if str(chat_id) not in channels:
-    #     context.bot.send_message(
-    #         chat_id=-447482461,
-    #         text=text,
-    #         # parse_mode='HTML'
-    #     )
+    if str(chat_id) not in channels:
+        context.bot.send_message(
+            chat_id=-447482461,
+            text=text,
+            # parse_mode='HTML'
+        )
 
     context.bot.send_message(
         chat_id=chat_id,
@@ -317,7 +317,7 @@ def set_daily_message(update, context):
     context.bot.send_message(
         chat_id=operations_channel, text="Дякую, тепер челенджі будуть працювати! Продуктивного дня вам там! 😌"
     )
-    context.job_queue.run_repeating(callback_repeating, interval=10800, context=None, name='Daily weather')
+    context.job_queue.run_repeating(callback_repeating, interval=10800, first=1, context=None, name='Daily weather')
 
 
 #  stop daily jobs
