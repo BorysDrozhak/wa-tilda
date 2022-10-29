@@ -50,6 +50,7 @@ if getpass.getuser() == "bdrozhak":
 elif getpass.getuser() == "andrii":
     tok = a_bot
     env = "dev"
+    bot = telegram.Bot(token=tok)
 
 if env == "prod":
     bot = telegram.Bot(token=tok)
@@ -64,6 +65,8 @@ dispatcher = updater.dispatcher
 
 
 def send_parsed_order(update, context):
+    time = datetime.datetime.now().time()
+    context.bot.send_message(chat_id=update.effective_chat.id, text=str(time))
     chat_id = update.effective_chat.id
     print("chart_id: " + str(chat_id))
     err = ""
@@ -227,7 +230,11 @@ Bolt Total =
 
 class FilterOrder(MessageFilter):
     def filter(self, message):
-        return "Заказ #" in message.text
+        if message.text is not None and "Заказ #" in message.text:
+            time = datetime.datetime.now().time()
+            bot.send_message(chat_id=site_orders_channel, text=str(time))
+            return True
+        return False
 
 
 filter_order = FilterOrder()
