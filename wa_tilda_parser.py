@@ -207,10 +207,6 @@ def send_kasa(update, context):
 
 LiqPay доставки = 
 
-Flashback Кеш = 
-Flashback Безнал = 
-Flashback Total = 
-
 Glovo Кеш = 
 Glovo Безнал = 
 Glovo Total = 

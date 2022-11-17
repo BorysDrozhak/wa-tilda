@@ -73,9 +73,7 @@ def parse_rocket_fmt(text):
     total["credit_card"] = round(total["credit_card"], 2)
     total["total"] = round(total["credit_card"] + total["cash"], 2)
 
-    return f"""Flashback Кеш = 0
-Flashback Безнал = 0
-Flashback Total = 0"""
+    return f""""""
 
 
 def parse_number_in_zvit(line):
@@ -110,8 +108,6 @@ def parse_total_kassa(text, env):
         if "Загально =" in line and terminal_passed is True:
             terminal_passed = False
             terminal_total = parse_number_in_zvit(line)
-        if "Total Flashback =" in line or "Flashback Total =" in line:
-            total_delivery += parse_number_in_zvit(line)
         if "Total Glovo =" in line or "Glovo Total =" in line:
             total_delivery += parse_number_in_zvit(line)
         if "Total Bolt =" in line or "Bolt Total =" in line:
