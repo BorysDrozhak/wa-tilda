@@ -134,3 +134,5 @@ anon.session
 
 wa_history.csv
 .tests/unit/wa_history.csv
+*.session
+*.session-journal

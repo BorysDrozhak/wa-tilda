@@ -1,3 +1,4 @@
 pytest
 python-statemachine
 pywttr
+telethon
