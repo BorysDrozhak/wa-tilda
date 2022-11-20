@@ -18,6 +18,7 @@ weather_smiles = {
     'Snowy': '🌨️',
     'Light rain shower': '🌧️',
     'Moderate rain': '🌧️',
+    'Heavy snow': '❄️'
 }
 
 
@@ -52,11 +53,12 @@ def save_weather():
     date_time_str = current_weather.local_obs_date_time
     date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %I:%M %p')
     time = date_time_obj.time().hour
-    daily_weather.weather_data.append({
-        'time': time,
-        'weather_desc': current_weather.weather_desc[0].value,
-        'feels': current_weather.feels_like_c
-    })
+    if not any(w['time'] == time for w in daily_weather.weather_data):
+        daily_weather.weather_data.append({
+            'time': time,
+            'weather_desc': current_weather.weather_desc[0].value,
+            'feels': current_weather.feels_like_c
+        })
 
 
 def get_whether_forecast():
