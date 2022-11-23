@@ -55,7 +55,7 @@ elif getpass.getuser() == "andrii":
     tok = a_bot
     env = "dev"
     bot = telegram.Bot(token=tok)
-    loop.run_until_complete(start_jobs(int(operations_channel)))
+    # loop.run_until_complete(start_jobs(int(operations_channel)))
 
 if env == "prod":
     bot = telegram.Bot(token=tok)
@@ -299,8 +299,7 @@ def callback_daily(context):
     state_obj.generate()
     context.bot.send_message(
         chat_id=operations_channel,
-        text='''Запустити Командний челендж?
-        Адміни, не забудьте переглянути
+        text='''Запустити Командний челендж?\nАдміни, не забудьте переглянути
         https://docs.google.com/document/d/1t7syqEJAOvpT8Vso7VE5BYfFP5zng_tNpsGJYXMEUi0/edit?usp=sharing''',
         reply_markup=ReplyKeyboardMarkup(BUTTONS, resize_keyboard=True, one_time_keyboard=True),
     )
@@ -316,7 +315,7 @@ def callback_last_order_alarm(context):
         if not is_bot_respond(messages):
             context.bot.send_message(
                 chat_id=site_orders_channel,
-                text='Агов! Замовлення вже більше 5 хвилин висить без обробки!'
+                text="@bd_xz_b @yanochka_s_s @@serhiy_yurta \nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
             )
 
 

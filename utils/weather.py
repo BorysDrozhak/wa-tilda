@@ -11,6 +11,7 @@ weather_smiles = {
     'Patchy rain possible': '🌦️',
     'Cloudy': '☁️',
     'Mist': '😶‍🌫️',
+    'Freezing fog': '❄️😶‍🌫️',
     'Sunny': '☀️',
     'Clear': '☀️',
     'Rainy': '🌧️',
@@ -52,7 +53,7 @@ def save_weather():
 
     date_time_str = current_weather.local_obs_date_time
     date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %I:%M %p')
-    time = date_time_obj.time().hour
+    time = datetime.datetime.strftime(date_time_obj, '%H:%M')
     if not any(w['time'] == time for w in daily_weather.weather_data):
         daily_weather.weather_data.append({
             'time': time,
@@ -72,7 +73,7 @@ def get_whether_forecast():
         emoji = weather_smile if weather_smile else wd.get('weather_desc')
         time = wd.get('time')
         temp = wd.get('feels')
-        weather_string += f"{time}{emoji} {temp}C "
+        weather_string += f"{time}{emoji} {temp}C\n"
 
     daily_weather.weather_data.clear()
     return weather_string
