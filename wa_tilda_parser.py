@@ -63,7 +63,10 @@ if env == "prod":
         chat_id=operations_channel,
         text="Наш ВА бот був успішно перегружений.",
     )
-    loop.run_until_complete(start_jobs(int(operations_channel)))
+    try:
+        loop.run_until_complete(start_jobs(int(operations_channel)))
+    except:
+        pass
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -310,8 +313,11 @@ def callback_repeating(context):
 
 
 def callback_last_order_alarm(context):
-    messages = loop.run_until_complete(get_messages(int(site_orders_channel)))
-    if messages:
+    try:
+        messages = loop.run_until_complete(get_messages(int(site_orders_channel)))
+    except:
+        pass
+    else:
         if not is_bot_respond(messages):
             context.bot.send_message(
                 chat_id=site_orders_channel,

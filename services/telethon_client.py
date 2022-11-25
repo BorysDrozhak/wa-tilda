@@ -15,7 +15,7 @@ class TelethonClient:
         if self.API_ID and self.API_HASH and self.PHONE:
             if not self.client:
                 self.client = TelegramClient(f'wa_session', self.API_ID, self.API_HASH)
-                self.client.start(phone=self.PHONE)
+                await self.client.start(phone=self.PHONE)
             return self.client
 
 
