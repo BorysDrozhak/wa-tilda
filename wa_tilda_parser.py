@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
 import datetime
 import getpass
 import logging
@@ -17,6 +18,7 @@ from utils.poll_data import POLLS, BUTTONS
 from utils.filters import filter_generate, filter_cancel
 from utils.states import state_obj
 from utils.weather import save_weather
+from utils.telethon_operations import get_messages, is_bot_respond, start_jobs
 
 waiters_channel = "-1001792566598"
 site_orders_channel = "-1001353838635"
@@ -43,6 +45,8 @@ a_bot = a_1 + a_2 + "I"
 
 env = "prod"
 
+loop = asyncio.get_event_loop()
+
 if getpass.getuser() == "bdrozhak":
     tok = b_bot
     env = "dev"
@@ -50,14 +54,19 @@ if getpass.getuser() == "bdrozhak":
 elif getpass.getuser() == "andrii":
     tok = a_bot
     env = "dev"
+    bot = telegram.Bot(token=tok)
+    # loop.run_until_complete(start_jobs(int(operations_channel)))
 
 if env == "prod":
     bot = telegram.Bot(token=tok)
     bot.send_message(
         chat_id=operations_channel,
-        text="""Наш ВА бот був успішно перегружений.
-    Будь ласка, клікніть /daily_poll, щоб запрацювали командні челенджі""",
+        text="Наш ВА бот був успішно перегружений.",
     )
+    try:
+        loop.run_until_complete(start_jobs(int(operations_channel)))
+    except:
+        pass
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
@@ -293,7 +302,8 @@ def callback_daily(context):
     state_obj.generate()
     context.bot.send_message(
         chat_id=operations_channel,
-        text="Запустити Командний челендж?",
+        text='''Запустити Командний челендж?\nАдміни, не забудьте переглянути
+        https://docs.google.com/document/d/1t7syqEJAOvpT8Vso7VE5BYfFP5zng_tNpsGJYXMEUi0/edit?usp=sharing''',
         reply_markup=ReplyKeyboardMarkup(BUTTONS, resize_keyboard=True, one_time_keyboard=True),
     )
 
@@ -302,8 +312,21 @@ def callback_repeating(context):
     save_weather()
 
 
+def callback_last_order_alarm(context):
+    try:
+        messages = loop.run_until_complete(get_messages(int(site_orders_channel)))
+    except:
+        pass
+    else:
+        if not is_bot_respond(messages):
+            context.bot.send_message(
+                chat_id=site_orders_channel,
+                text="@bd_xz_b @yanochka_s_s @@serhiy_yurta \nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
+            )
+
+
 #  create queue for daily running jobs
-def set_daily_message(update, context):
+def run_jobs(update, context):
     chat_id = update.message.chat_id
     context.job_queue.run_daily(
         callback_daily,
@@ -316,6 +339,7 @@ def set_daily_message(update, context):
         chat_id=operations_channel, text="Дякую, тепер челенджі будуть працювати! Продуктивного дня вам там! 😌"
     )
     context.job_queue.run_repeating(callback_repeating, interval=10800, first=1, context=None, name='Daily weather')
+    context.job_queue.run_repeating(callback_last_order_alarm, interval=300, first=1, context=None, name='Order alarm')
 
 
 #  stop daily jobs
@@ -325,7 +349,7 @@ def stop_daily(update, context):
     context.job_queue.stop()
 
 
-dispatcher.add_handler(CommandHandler("daily_poll", set_daily_message, pass_job_queue=True))
+dispatcher.add_handler(CommandHandler("daily_poll", run_jobs, pass_job_queue=True))
 dispatcher.add_handler(CommandHandler("stop_daily", stop_daily, pass_job_queue=True))
 poll_handler = MessageHandler(
     filter_generate,
