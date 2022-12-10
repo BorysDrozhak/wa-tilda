@@ -2,3 +2,4 @@ pytest
 python-statemachine
 pywttr
 telethon
+gspread

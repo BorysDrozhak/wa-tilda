@@ -2,7 +2,7 @@
 
 import datetime
 
-from utils.csv_writer import write_daily_zvit
+from utils.gspread_api import add_history
 from utils.weather import get_whether_forecast
 
 
@@ -120,10 +120,10 @@ def parse_total_kassa(text, env):
             total_resto += parse_number_in_zvit(line)
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
     data.extend(
-        [datetime.date.today(), total_resto, total_delivery, total]
+        [datetime.date.today().strftime('%m/%d/%Y'), total_resto, total_delivery, total]
     )
     if data:
-        write_daily_zvit(data, env)
+        add_history(data)
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
