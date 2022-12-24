@@ -2,7 +2,7 @@
 
 import datetime
 
-from utils.gspread_api import add_history
+from utils.gspread_api import add_history, get_previous_date_total
 from utils.weather import get_whether_forecast
 
 
@@ -90,6 +90,7 @@ def parse_total_kassa(text, env):
     terminal_total = 0
     z_zvit = 0
     data = []
+    week_difference = 0
     for line in text.split("\n"):
         if "Каса 202" in line:
             name = line.strip(".")
@@ -124,6 +125,9 @@ def parse_total_kassa(text, env):
     )
     if data:
         add_history(data)
+    previous_week_total = get_previous_date_total(datetime.date.today() - datetime.timedelta(days=7))
+    if previous_week_total:
+        week_difference = compute_week_difference(int(previous_week_total), total)
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
@@ -169,11 +173,18 @@ def parse_total_kassa(text, env):
         tip_check = f"\nчай: {tips}?"
     elif alarm:
         tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
-
+    previous_week = ""
+    if previous_week_total and week_difference:
+        previous_week = f"\n(Минулий тиждень {previous_week_total} {week_difference}%)"
     return (
         f"{name} - Разом: {int(total)}"
+        f"{previous_week}"
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
         f"{tip_check}{congrats}{new_records}\n"
         f"{get_whether_forecast()}"
     )
+
+
+def compute_week_difference(previous_week_total, total):
+    return int((previous_week_total - total) / total * 100.0)
