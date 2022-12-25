@@ -121,7 +121,7 @@ def parse_total_kassa(text, env):
             total_resto += parse_number_in_zvit(line)
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
     data.extend(
-        [datetime.date.today().strftime('%m/%d/%Y'), total_resto, total_delivery, total]
+        [datetime.date.today().strftime('%m/%d/%Y'), int(total_resto), int(total_delivery), int(total)]
     )
     if data:
         add_history(data)
