@@ -127,7 +127,10 @@ def parse_total_kassa(text, env):
         add_history(data)
     previous_week_total = get_previous_date_total(datetime.date.today() - datetime.timedelta(days=7))
     if previous_week_total:
-        week_difference = compute_week_difference(int(previous_week_total), total)
+        try:
+            week_difference = compute_week_difference(int(previous_week_total), total)
+        except Exception as e:
+            print(e)
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
