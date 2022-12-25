@@ -120,10 +120,11 @@ def parse_total_kassa(text, env):
         if "Shake to pay" in line:
             total_resto += parse_number_in_zvit(line)
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
+    today = datetime.date.today()
     data.extend(
-        [datetime.date.today().strftime('%m/%d/%Y'), int(total_resto), int(total_delivery), int(total)]
+        [today.strftime('%m/%d/%Y'), int(total_resto), int(total_delivery), int(total)]
     )
-    if data:
+    if data and not get_previous_date_total(today):
         add_history(data)
     previous_week_total = get_previous_date_total(datetime.date.today() - datetime.timedelta(days=7))
     if previous_week_total:
