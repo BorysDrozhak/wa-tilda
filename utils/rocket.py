@@ -194,4 +194,4 @@ def compute_week_difference(previous_week_total, total):
         print(e)
         return
     else:
-        return int(((previous_week_total - total) / previous_week_total) * 100.0)
+        return int((1 - (previous_week_total/total)) * 100.0)
