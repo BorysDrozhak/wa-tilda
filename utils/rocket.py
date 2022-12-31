@@ -133,7 +133,7 @@ def parse_total_kassa(text, env):
         alarm = True
 
     new_records = ""
-    top_delivery = 21155
+    top_delivery = 42560
     top_delivery_date = "13.01.21"
     top_resto = 31845
     top_resto_date = "26.12"
