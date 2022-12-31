@@ -2,7 +2,7 @@
 
 import datetime
 
-from utils.csv_writer import write_daily_zvit
+from utils.gspread_api import add_history, get_previous_date_total
 from utils.weather import get_whether_forecast
 
 
@@ -90,6 +90,7 @@ def parse_total_kassa(text, env):
     terminal_total = 0
     z_zvit = 0
     data = []
+    week_difference = 0
     for line in text.split("\n"):
         if "Каса 202" in line:
             name = line.strip(".")
@@ -119,11 +120,15 @@ def parse_total_kassa(text, env):
         if "Shake to pay" in line:
             total_resto += parse_number_in_zvit(line)
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
+    today = datetime.date.today()
     data.extend(
-        [datetime.date.today(), total_resto, total_delivery, total]
+        [today.strftime('%m/%d/%Y'), int(total_resto), int(total_delivery), int(total)]
     )
-    if data:
-        write_daily_zvit(data, env)
+    if data and not get_previous_date_total(today):
+        add_history(data)
+    previous_week_total = get_previous_date_total(datetime.date.today() - datetime.timedelta(days=7))
+    if previous_week_total:
+        week_difference = compute_week_difference(previous_week_total, total)
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
@@ -169,11 +174,24 @@ def parse_total_kassa(text, env):
         tip_check = f"\nчай: {tips}?"
     elif alarm:
         tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
-
+    previous_week = ""
+    if previous_week_total and week_difference:
+        previous_week = f"\n(Минулий тиждень {previous_week_total} {week_difference}%)"
     return (
         f"{name} - Разом: {int(total)}"
+        f"{previous_week}"
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
         f"{tip_check}{congrats}{new_records}\n"
         f"{get_whether_forecast()}"
     )
+
+
+def compute_week_difference(previous_week_total, total):
+    try:
+        previous_week_total = int(previous_week_total)
+    except Exception as e:
+        print(e)
+        return
+    else:
+        return int((1 - (previous_week_total/total)) * 100.0)

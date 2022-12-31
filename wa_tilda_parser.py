@@ -368,7 +368,19 @@ def echo(update, context):
     chat_id = update.effective_chat.id
     print(update.message.text)
     print("chart_id: " + str(chat_id))
+    if bot_have_to_react(update):
+        context.bot.send_message(update.effective_chat.id, reply_to_message_id=update.message.message_id, text='🥰')
 
+
+def bot_have_to_react(update):
+    if not update.effective_message.reply_to_message:
+        return False
+    if update.effective_message.reply_to_message and not \
+            update.effective_message.reply_to_message.from_user.is_bot == True:
+        return False
+    if re.search(r'дякую|навзаєм', update.message.text, re.IGNORECASE):
+        return True
+    return False
 
 echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
 dispatcher.add_handler(echo_handler)

@@ -1,4 +1,6 @@
 pytest
+pytest-mock
 python-statemachine
 pywttr
 telethon
+gspread
