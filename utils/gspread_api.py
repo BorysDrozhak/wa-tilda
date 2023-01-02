@@ -5,14 +5,23 @@ import gspread
 GC_CREDS = os.getenv('WA_CREDS')
 
 
-def add_history(data):
+def add_history(data, zvit_date):
     try:
         gc = gspread.service_account(GC_CREDS)
         sh = gc.open('wa-accounting')
         wks = sh.worksheet('wa-history')
     except:
         return
-    wks.append_row(data)
+    existing_row = wks.find(zvit_date)
+    if not existing_row:
+        return wks.append_row(data)
+    try:
+        col_to_update = 1
+        for d in data:
+            wks.update_cell(existing_row.row, col_to_update, d)
+            col_to_update += 1
+    except Exception as e:
+        print(e)
 
 
 def get_previous_date_total(date):

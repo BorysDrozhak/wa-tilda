@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import dateutil.parser as dparser
 
 from utils.gspread_api import add_history, get_previous_date_total
 from utils.weather import get_whether_forecast
@@ -100,11 +101,16 @@ def parse_total_kassa(text, env):
     terminal_total = 0
     z_zvit = 0
     data = []
+    zvit_date = datetime.date.today().strftime('%m/%d/%Y')
     week_difference = 0
     total_net_profit = 0.0
     for line in text.split("\n"):
         if "Каса 202" in line:
             name = line.strip(".")
+            try:
+                zvit_date = dparser.parse(name, fuzzy=True)
+            except Exception as e:
+                print(e)
         elif "Загально =" in line or "Total =" in line:
             total += parse_number_in_zvit(line)
         elif "Ресторан =" in line:
@@ -139,13 +145,12 @@ def parse_total_kassa(text, env):
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
             total_net_profit += parse_number_in_zvit(line) * SHAKE_TO_PAY_NET_RATE
     total_net_profit -= total_net_profit * TOTAL_NET_RATE
-    today = datetime.date.today()
     data.extend(
-        [today.strftime('%m/%d/%Y'), int(total_resto), int(total_delivery), int(total)]
+        [zvit_date.strftime('%m/%d/%Y'), str(int(total_resto)), str(int(total_delivery)), str(int(total))]
     )
-    if data and not get_previous_date_total(today):
-        add_history(data)
-    previous_week_total = get_previous_date_total(datetime.date.today() - datetime.timedelta(days=7))
+    if data:
+        add_history(data, zvit_date.strftime('%m/%d/%Y'))
+    previous_week_total = get_previous_date_total(zvit_date - datetime.timedelta(days=7))
     if previous_week_total:
         week_difference = compute_week_difference(previous_week_total, total)
     delta = terminal_total - z_zvit
@@ -158,7 +163,7 @@ def parse_total_kassa(text, env):
 
     new_records = ""
     top_delivery = 42560
-    top_delivery_date = "13.01.21"
+    top_delivery_date = "31.12.22"
     top_resto = 31845
     top_resto_date = "26.12"
 

@@ -4,3 +4,4 @@ python-statemachine
 pywttr
 telethon
 gspread
+python-dateutil
