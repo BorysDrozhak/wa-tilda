@@ -4,6 +4,16 @@ import datetime
 
 from utils.gspread_api import add_history, get_previous_date_total
 from utils.weather import get_whether_forecast
+from const import (
+DELIVERY_NET_RATE,
+DAILY_SPEND,
+BOLT_DELIVEY_NET_RATE,
+GLOVO_DELIVEY_NET_RATE,
+RESTO_CASH_NET_RATE,
+RESTO_CARD_NET_RATE,
+SHAKE_TO_PAY_NET_RATE,
+TOTAL_NET_RATE
+)
 
 
 def parse_rocket(text):
@@ -91,6 +101,7 @@ def parse_total_kassa(text, env):
     z_zvit = 0
     data = []
     week_difference = 0
+    total_net_profit = 0.0
     for line in text.split("\n"):
         if "Каса 202" in line:
             name = line.strip(".")
@@ -98,28 +109,36 @@ def parse_total_kassa(text, env):
             total += parse_number_in_zvit(line)
         elif "Ресторан =" in line:
             total_resto += parse_number_in_zvit(line)
+            total_net_profit += parse_number_in_zvit(line) * RESTO_CASH_NET_RATE
         elif "LiqPay доставки =" in line:
             price_liqpay = parse_number_in_zvit(line)
             total_delivery += price_liqpay
             total += price_liqpay
+            total_net_profit += parse_number_in_zvit(line) * DELIVERY_NET_RATE
         if "Доставка =" in line:
             total_delivery += parse_number_in_zvit(line)
+            total_net_profit += parse_number_in_zvit(line) * DELIVERY_NET_RATE
         if "Термінал" in line:
             terminal_passed = True
         if "Загально =" in line and terminal_passed is True:
             terminal_passed = False
             terminal_total = parse_number_in_zvit(line)
+            total_net_profit += parse_number_in_zvit(line) * RESTO_CARD_NET_RATE
         if "Total Glovo =" in line or "Glovo Total =" in line:
             total_delivery += parse_number_in_zvit(line)
+            total_net_profit += parse_number_in_zvit(line) * GLOVO_DELIVEY_NET_RATE
         if "Total Bolt =" in line or "Bolt Total =" in line:
             print(total_delivery)
             total_delivery += parse_number_in_zvit(line)
             print(total_delivery)
+            total_net_profit += parse_number_in_zvit(line) * BOLT_DELIVEY_NET_RATE
         if "Z-звіт" in line:
             z_zvit = parse_number_in_zvit(line)
         if "Shake to pay" in line:
             total_resto += parse_number_in_zvit(line)
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
+            total_net_profit += parse_number_in_zvit(line) * SHAKE_TO_PAY_NET_RATE
+    total_net_profit -= total_net_profit * TOTAL_NET_RATE
     today = datetime.date.today()
     data.extend(
         [today.strftime('%m/%d/%Y'), int(total_resto), int(total_delivery), int(total)]
@@ -176,10 +195,12 @@ def parse_total_kassa(text, env):
         tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
     previous_week = ""
     if previous_week_total and week_difference:
-        previous_week = f"\n(Минулий тиждень {previous_week_total} {week_difference}%)"
+        previous_week = f"\n[Минулий тиждень {previous_week_total} {week_difference}%]"
+    total_net_rate = int(total_net_profit/total*100)
     return (
         f"{name} - Разом: {int(total)}"
         f"{previous_week}"
+        f"\n[{int(total_net_profit)} {total_net_rate}% {DAILY_SPEND}]"
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
         f"{tip_check}{congrats}{new_records}\n"
@@ -194,4 +215,4 @@ def compute_week_difference(previous_week_total, total):
         print(e)
         return
     else:
-        return int((1 - (previous_week_total/total)) * 100.0)
+        return int(((total - previous_week_total)/total) * 100.0)
