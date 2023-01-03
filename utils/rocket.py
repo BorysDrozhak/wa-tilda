@@ -115,35 +115,34 @@ def parse_total_kassa(text, env):
             total += parse_number_in_zvit(line)
         elif "Ресторан =" in line:
             total_resto += parse_number_in_zvit(line)
-            total_net_profit += parse_number_in_zvit(line) * RESTO_CASH_NET_RATE
+            total_net_profit += parse_number_in_zvit(line) * (1 - RESTO_CASH_NET_RATE)
         elif "LiqPay доставки =" in line:
             price_liqpay = parse_number_in_zvit(line)
             total_delivery += price_liqpay
             total += price_liqpay
-            total_net_profit += parse_number_in_zvit(line) * DELIVERY_NET_RATE
+            total_net_profit += parse_number_in_zvit(line) * (1 - DELIVERY_NET_RATE)
         if "Доставка =" in line:
             total_delivery += parse_number_in_zvit(line)
-            total_net_profit += parse_number_in_zvit(line) * DELIVERY_NET_RATE
+            total_net_profit += parse_number_in_zvit(line) * (1 - DELIVERY_NET_RATE)
         if "Термінал" in line:
             terminal_passed = True
         if "Загально =" in line and terminal_passed is True:
             terminal_passed = False
             terminal_total = parse_number_in_zvit(line)
-            total_net_profit += parse_number_in_zvit(line) * RESTO_CARD_NET_RATE
         if "Total Glovo =" in line or "Glovo Total =" in line:
             total_delivery += parse_number_in_zvit(line)
-            total_net_profit += parse_number_in_zvit(line) * GLOVO_DELIVEY_NET_RATE
+            total_net_profit += parse_number_in_zvit(line) * (1 - GLOVO_DELIVEY_NET_RATE)
         if "Total Bolt =" in line or "Bolt Total =" in line:
             print(total_delivery)
             total_delivery += parse_number_in_zvit(line)
             print(total_delivery)
-            total_net_profit += parse_number_in_zvit(line) * BOLT_DELIVEY_NET_RATE
+            total_net_profit += parse_number_in_zvit(line) * (1 - BOLT_DELIVEY_NET_RATE)
         if "Z-звіт" in line:
             z_zvit = parse_number_in_zvit(line)
         if "Shake to pay" in line:
             total_resto += parse_number_in_zvit(line)
             total += parse_number_in_zvit(line)  # shake to pay and liqpay added separetly to total
-            total_net_profit += parse_number_in_zvit(line) * SHAKE_TO_PAY_NET_RATE
+            total_net_profit += parse_number_in_zvit(line) * (1 - SHAKE_TO_PAY_NET_RATE)
     total_net_profit -= total_net_profit * TOTAL_NET_RATE
     data.extend(
         [zvit_date.strftime('%m/%d/%Y'), str(int(total_resto)), str(int(total_delivery)), str(int(total))]
