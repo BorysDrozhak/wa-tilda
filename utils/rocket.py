@@ -145,7 +145,13 @@ def parse_total_kassa(text, env):
             total_net_profit += parse_number_in_zvit(line) * (1 - SHAKE_TO_PAY_NET_RATE)
     total_net_profit -= total_net_profit * TOTAL_NET_RATE
     data.extend(
-        [zvit_date.strftime('%m/%d/%Y'), str(int(total_resto)), str(int(total_delivery)), str(int(total))]
+        [
+            zvit_date.strftime('%m/%d/%Y'),
+            str(int(total_resto)),
+            str(int(total_delivery)),
+            str(int(total)),
+            str(int(total_net_profit)),
+        ]
     )
     if data:
         add_history(data, zvit_date.strftime('%m/%d/%Y'))
@@ -199,14 +205,13 @@ def parse_total_kassa(text, env):
         tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
     previous_week = ""
     if previous_week_total and week_difference:
-        previous_week = f"\n[Минулий тиждень {previous_week_total} {week_difference}%]"
+        previous_week = f"(МТ: {previous_week_total} {week_difference}%)"
     total_net_rate = 100 - int(total_net_profit/total*100)
     return (
-        f"{name} - Разом: {int(total)}"
-        f"{previous_week}"
-        f"\n[{int(total_net_profit)} {total_net_rate}% {DAILY_SPEND}]"
+        f"{name} - {total_net_rate}% - {int(total_net_profit)}"
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
+        f"\nРазом: {int(total)} {previous_week}"
         f"{tip_check}{congrats}{new_records}\n"
         f"{get_whether_forecast()}"
     )
