@@ -208,7 +208,7 @@ def parse_total_kassa(text, env):
         previous_week = f"(МТ: {previous_week_total} {week_difference}%)"
     total_net_rate = 100 - int(total_net_profit/total*100)
     return (
-        f"{name} - {total_net_rate}% - {int(total_net_profit)}"
+        f"{name} - ВП: {int(total_net_profit)} - {total_net_rate}%"
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
         f"\nРазом: {int(total)} {previous_week}"

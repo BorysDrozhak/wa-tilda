@@ -16,7 +16,7 @@ def test_total_tip(mocker):
     # чай 85
     mocker.patch('utils.rocket.get_previous_date_total', return_value='10800')
     assert parse_total_kassa(example_total1, 'dev') == (
-        'Каса 2021-05-13 - 39% - 7083\n'
+        'Каса 2021-05-13 - ВП: 7083 - 39%\n'
         'Доставка: 3719\n'
         'Зал ресторану: 7810\n'
         'Разом: 11529 (МТ: 10800 6%)\n'
@@ -25,7 +25,7 @@ def test_total_tip(mocker):
     )
 
     assert parse_total_kassa(example_total2, 'dev') == (
-        'Каса 2021-06-03 - 38% - 8754\n'
+        'Каса 2021-06-03 - ВП: 8754 - 38%\n'
         'Доставка: 2633\n'
         'Зал ресторану: 11480\n'
         'Разом: 14113 (МТ: 10800 23%)\n'
@@ -34,7 +34,7 @@ def test_total_tip(mocker):
     )
 
     assert parse_total_kassa(example_total3, 'dev') == (
-        'Каса 2021-06-03 - 40% - 117700\n'
+        'Каса 2021-06-03 - ВП: 117700 - 40%\n'
         'Доставка: 81959\n'
         'Зал ресторану: 111490\n'
         'Разом: 193449 (МТ: 10800 94%)\n'
@@ -49,7 +49,7 @@ def test_total_tip(mocker):
 def test_total_none_previous_week(mocker):
     mocker.patch('utils.rocket.get_previous_date_total', return_value=None)
     assert parse_total_kassa(example_total1, 'dev') == (
-        'Каса 2021-05-13 - 39% - 7083\n'
+        'Каса 2021-05-13 - ВП: 7083 - 39%\n'
         'Доставка: 3719\n'
         'Зал ресторану: 7810\n'
         'Разом: 11529 \n'
@@ -62,7 +62,7 @@ def test_total_api_exception_previous_week(mocker):
     prev = mocker.patch('utils.gspread_api.gspread.service_account', return_value=None)
     prev.side_effect = Exception(HTTPStatus.GATEWAY_TIMEOUT)
     assert parse_total_kassa(example_total1, 'dev') == (
-        'Каса 2021-05-13 - 39% - 7083\n'
+        'Каса 2021-05-13 - ВП: 7083 - 39%\n'
         'Доставка: 3719\n'
         'Зал ресторану: 7810\n'
         'Разом: 11529 \n'
