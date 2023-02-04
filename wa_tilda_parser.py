@@ -26,6 +26,7 @@ cash_flow_channel = "-1001658828551"
 cash_flow_channel2 = "-447482461"
 wa_orders_channel = "-461519645"
 operations_channel = "-1001719165729"
+stakeholders_channel = "-1001524640483"
 channels = [waiters_channel, site_orders_channel, cash_flow_channel, cash_flow_channel2]
 
 b = "AAFiYwWlbJwvUhbwV"
@@ -308,6 +309,20 @@ def callback_daily(context):
     )
 
 
+#  run job for daily poll
+def callback_daily_stakeholders(context):
+    context.bot.send_message(
+        chat_id=stakeholders_channel,
+        text='''
+Привіт всім. Давайте пропишем:
+- успіхи за вчора
+- блокери та виклики
+- плани на сьогодні
+
+Всім дякую, і продуктивного дня
+''',
+    )
+
 def callback_repeating(context):
     save_weather()
 
@@ -340,6 +355,13 @@ def run_jobs(update, context):
     )
     context.job_queue.run_repeating(callback_repeating, interval=10800, first=1, context=None, name='Daily weather')
     context.job_queue.run_repeating(callback_last_order_alarm, interval=300, first=1, context=None, name='Order alarm')
+    context.job_queue.run_daily(
+        callback_daily_stakeholders,
+        time=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone("Europe/Kiev")),
+        days=(0, 1, 2, 3, 4),
+        context=chat_id,
+        name=str(chat_id),
+    )
 
 
 #  stop daily jobs
