@@ -336,7 +336,7 @@ def callback_last_order_alarm(context):
         if not is_bot_respond(messages):
             context.bot.send_message(
                 chat_id=site_orders_channel,
-                text="@bd_xz_b @yanochka_s_s @@serhiy_yurta \nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
+                text="@dmitri_mariunich @yanochka_s_s @serhiy_yurta \nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
             )
 
 
