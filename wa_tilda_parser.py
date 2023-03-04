@@ -52,7 +52,7 @@ if getpass.getuser() == "bdrozhak":
     tok = b_bot
     env = "dev"
 
-elif getpass.getuser() == "andrii":
+elif getpass.getuser() == "andriyueni":
     tok = a_bot
     env = "dev"
     bot = telegram.Bot(token=tok)

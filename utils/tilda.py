@@ -87,6 +87,7 @@ def parse_order(text):
     result_order_block, other, utm = None, None, None
     do_not_know_zones, self_delivery = False, False
     promocode = None
+    paid = None
 
     order_block = text.split("Данные плательщика:")[0]
     add_block = text.split("Дополнительные данные:")
@@ -168,6 +169,9 @@ def parse_order(text):
             continue
         elif 'Промокод' in line:
             promocode = line.split(": ")[1]
+            continue
+        elif 'Заказ оплачен' in line:
+            paid = 'Оплачено'
             continue
         elif not order or len(order[0]) != 2:
             continue
@@ -283,7 +287,7 @@ def parse_order(text):
 {result_order_block_for_client}
 
 🏡 Доставка за адресом: {client_address}
-💰 Разом: {total_order_price} {about_delivery_block}
+💰 Разом: {total_order_price} {about_delivery_block} {paid or 'Оплата готівкою'}
 
 Дякуємо вам за замовлення!{smile}
 Орієнтовний час приготування та доставки 40-80 хвилин 🧭
