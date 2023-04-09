@@ -157,7 +157,7 @@ def parse_total_kassa(text, env):
         add_history(data, zvit_date.strftime('%m/%d/%Y'))
     previous_week_total = get_previous_date_total(zvit_date - datetime.timedelta(days=7))
     if previous_week_total:
-        week_difference = compute_week_difference(previous_week_total, total)
+        week_difference = compute_week_difference(previous_week_total, total_net_profit)
     delta = terminal_total - z_zvit
     tips = 0
     alarm = False
@@ -205,7 +205,7 @@ def parse_total_kassa(text, env):
         tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
     previous_week = ""
     if previous_week_total and week_difference:
-        previous_week = f"(МТ: {previous_week_total} {week_difference}%)"
+        previous_week = f"(МТ ВП: {previous_week_total} {week_difference}%)"
     total_net_rate = 100 - int(total_net_profit/total*100)
     return (
         f"{name} - ВП: {int(total_net_profit)} - {total_net_rate}%"
@@ -224,4 +224,4 @@ def compute_week_difference(previous_week_total, total):
         print(e)
         return
     else:
-        return int(((total - previous_week_total)/total) * 100.0)
+        return 100 - int(previous_week_total/total*100)

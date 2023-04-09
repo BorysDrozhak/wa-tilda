@@ -35,7 +35,7 @@ def get_previous_date_total(date):
     if not previous_weekday_row:
         return
     previous_weekday_row = previous_weekday_row.row
-    previous_week_total = wks.acell(f'D{previous_weekday_row}')
+    previous_week_total = wks.acell(f'E{previous_weekday_row}')
     if not previous_week_total:
         return
     return previous_week_total.value
