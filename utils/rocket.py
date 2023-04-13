@@ -205,13 +205,14 @@ def parse_total_kassa(text, env):
         tip_check = f"\nНе сходиться z-звіт з айко продажем на:{delta}"
     previous_week = ""
     if previous_week_total and week_difference:
-        previous_week = f"(МТ ВП: {previous_week_total} {week_difference}%)"
+        previous_week = f"\n(МТ ВП: {previous_week_total} {week_difference}%)"
     total_net_rate = 100 - int(total_net_profit/total*100)
     return (
         f"{name} - ВП: {int(total_net_profit)} - {total_net_rate}%"
+        f"{previous_week}"
         f"\nДоставка: {int(total_delivery)}"
         f"\nЗал ресторану: {int(total_resto)}"
-        f"\nРазом: {int(total)} {previous_week}"
+        f"\nРазом: {int(total)}"
         f"{tip_check}{congrats}{new_records}\n"
         f"{get_whether_forecast()}"
     )
