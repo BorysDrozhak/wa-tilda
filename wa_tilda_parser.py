@@ -52,7 +52,7 @@ if getpass.getuser() == "bdrozhak":
     tok = b_bot
     env = "dev"
 
-elif getpass.getuser() == "andriyueni":
+elif getpass.getuser() == "andriyzhyhil":
     tok = a_bot
     env = "dev"
     bot = telegram.Bot(token=tok)
@@ -311,16 +311,23 @@ def callback_daily(context):
 
 #  run job for daily poll
 def callback_daily_stakeholders(context):
-    context.bot.send_message(
-        chat_id=stakeholders_channel,
-        text='''
+    message = '''
 Привіт всім. Давайте пропишем:
 - успіхи за вчора
 - блокери та виклики
 - плани на сьогодні
-
+'''
+    if datetime.date.today().weekday() == 0:
+        message += '''- репорт по минулому тижню
+- план на цей тиждень
+        '''
+    message += '''
+    
 Всім дякую, і продуктивного дня
-''',
+    '''
+    context.bot.send_message(
+        chat_id=context.update.effective_chat.id,
+        text=message,
     )
 
 def callback_repeating(context):
