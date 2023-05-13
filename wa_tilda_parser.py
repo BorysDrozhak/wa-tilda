@@ -326,7 +326,7 @@ def callback_daily_stakeholders(context):
 Всім дякую, і продуктивного дня
     '''
     context.bot.send_message(
-        chat_id=context.update.effective_chat.id,
+        chat_id=stakeholders_channel,
         text=message,
     )
 
