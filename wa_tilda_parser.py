@@ -7,6 +7,7 @@ import logging
 import re
 import traceback
 import pytz
+from retry import retry
 
 import telegram
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
@@ -72,7 +73,7 @@ if env == "prod":
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
 
-
+@retry(Exception, tries=3, delay=3)
 def send_parsed_order(update, context):
     chat_id = update.effective_chat.id
     print("chart_id: " + str(chat_id))
