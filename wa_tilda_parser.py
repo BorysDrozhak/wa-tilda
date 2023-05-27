@@ -19,7 +19,7 @@ from utils.poll_data import POLLS, BUTTONS
 from utils.filters import filter_generate, filter_cancel
 from utils.states import state_obj
 from utils.weather import save_weather
-from utils.telethon_operations import get_messages, is_bot_respond, start_jobs
+from utils.telethon_operations import get_messages, bot_respond, start_jobs
 
 waiters_channel = "-1001792566598"
 site_orders_channel = "-1001353838635"
@@ -72,6 +72,7 @@ if env == "prod":
 
 updater = Updater(token=tok, use_context=True)
 dispatcher = updater.dispatcher
+
 
 @retry(Exception, tries=3, delay=3)
 def send_parsed_order(update, context):
@@ -133,6 +134,7 @@ def send_parse_rocket(update, context):
         raise err
 
 
+@retry(Exception, tries=3, delay=3)
 def send_parse_zvit(update, context):
     chat_id = update.effective_chat.id
     err = ""
@@ -236,7 +238,7 @@ Bolt Total =
 
 class FilterOrder(MessageFilter):
     def filter(self, message):
-        return "Заказ #" in message.text
+        return "Заказ #" in message.text if message.text else False
 
 
 filter_order = FilterOrder()
@@ -244,7 +246,7 @@ filter_order = FilterOrder()
 
 class FilterRocket(MessageFilter):
     def filter(self, message):
-        return "arrow_right_alt" in message.text
+        return "arrow_right_alt" in message.text if message.text else False
 
 
 filter_rocket = FilterRocket()
@@ -252,7 +254,7 @@ filter_rocket = FilterRocket()
 
 class FilterZvit(MessageFilter):
     def filter(self, message):
-        return "Каса 202" in message.text
+        return "Каса 202" in message.text if message.text else False
 
 
 filter_zvit = FilterZvit()
@@ -331,6 +333,7 @@ def callback_daily_stakeholders(context):
         text=message,
     )
 
+
 def callback_repeating(context):
     save_weather()
 
@@ -341,10 +344,10 @@ def callback_last_order_alarm(context):
     except:
         pass
     else:
-        if not is_bot_respond(messages):
+        if not bot_respond(messages):
             context.bot.send_message(
                 chat_id=site_orders_channel,
-                text="@dmitri_mariunich @yanochka_s_s @serhiy_yurta \nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
+                text="@bd_xz_b @yanochka_s_s @serhiy_yurta \nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
             )
 
 
@@ -398,11 +401,11 @@ def echo(update, context):
     chat_id = update.effective_chat.id
     print(update.message.text)
     print("chart_id: " + str(chat_id))
-    if bot_have_to_react(update):
+    if bot_has_to_react(update):
         context.bot.send_message(update.effective_chat.id, reply_to_message_id=update.message.message_id, text='🥰')
 
 
-def bot_have_to_react(update):
+def bot_has_to_react(update):
     if not update.effective_message.reply_to_message:
         return False
     if update.effective_message.reply_to_message and not \
@@ -411,6 +414,7 @@ def bot_have_to_react(update):
     if re.search(r'дякую|навзаєм', update.message.text, re.IGNORECASE):
         return True
     return False
+
 
 echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
 dispatcher.add_handler(echo_handler)
