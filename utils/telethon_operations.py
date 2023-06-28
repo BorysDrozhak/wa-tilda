@@ -2,6 +2,7 @@ import pytz
 from datetime import datetime, timedelta
 
 from telethon.tl.functions.messages import GetHistoryRequest
+from telethon.tl.functions.channels import InviteToChannelRequest
 
 from services.telethon_client import telethon_client
 
@@ -38,3 +39,18 @@ async def start_jobs(channel_id):
     client = await telethon_client.get_client()
     entity = await client.get_entity(channel_id)
     await client.send_message(entity=entity, message="/daily_poll")
+
+
+async def add_member(username, channels):
+    client = await telethon_client.get_client()
+    if not client:
+        return
+
+    for channel in channels:
+        user_to_add = await client.get_input_entity(username)
+        print(user_to_add)
+
+        try:
+            await client(InviteToChannelRequest(channel, [user_to_add]))
+        except Exception as e:
+            print(e)
