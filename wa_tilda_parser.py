@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import enum
 import asyncio
 import datetime
 import getpass
@@ -400,11 +400,42 @@ dispatcher.add_handler(cancel_poll_handler)
 
 # Define conversation states
 USERNAME, ROLE = range(2)
-CHANNELS = {
-    'кухар': ["-1001719165729", "-461519645", "-1001658828551"],
-    'офіціант': ["-1001719165729", "-461519645", "-1001658828551"],
-    'бармен': ["-1001719165729", "-461519645", "-1001658828551"],
-    'адмін': ["-1001719165729", "-461519645", "-1001658828551"]
+
+
+class Roles(enum.Enum):
+    waiter = 'офіціант'
+    chef = 'кухар'
+    bartender = 'бармен'
+    admin = 'адмін'
+
+
+class Channels(enum.Enum):
+    operations_channel = '-1001719165729'
+    cash_flow_channel = '-1001658828551'
+    wa_orders_channel = '-461519645'
+
+
+CHANNELS_BY_ROLE = {
+    Roles.chef.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.wa_orders_channel.value
+    ],
+    Roles.waiter.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.wa_orders_channel.value
+    ],
+    Roles.bartender.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.wa_orders_channel.value
+    ],
+    Roles.admin.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.wa_orders_channel.value
+    ],
 }
 
 
@@ -449,7 +480,7 @@ def collect_role(update, context):
 
 def add_members(user_info):
     role = user_info.get('role').lower()
-    channels_to_add = CHANNELS.get(role)
+    channels_to_add = CHANNELS_BY_ROLE.get(role)
     user_data = [
         *user_info.values(),
         datetime.date.today().strftime('%m/%d/%Y'),
