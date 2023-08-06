@@ -3,7 +3,7 @@
 import datetime
 import dateutil.parser as dparser
 
-from utils.gspread_api import add_history, get_previous_date_total
+from utils.gspread_api import add_history, get_previous_date_total, get_records, update_total_records
 from utils.weather import get_whether_forecast
 from const import (
 DELIVERY_NET_RATE,
@@ -167,18 +167,20 @@ def parse_total_kassa(text, env):
         alarm = True
 
     new_records = ""
-    top_delivery = 42560
-    top_delivery_date = "31.12.22"
-    top_resto = 31845
-    top_resto_date = "26.12"
+    top_delivery, top_resto = get_records()
 
-    if total_delivery > top_delivery:
+    if top_delivery.get('total') and total_delivery > top_delivery.get('total'):
         new_records += (
-            f"\nВав! Новий рекорд на доставці! Був {top_delivery} {top_delivery_date}, а тепер {total_delivery}"
+            f"\nВав! Новий рекорд на доставці! "
+            f"Був {top_delivery.get('total')} {top_delivery.get('date')}, а тепер {total_delivery}"
         )
-    if total_resto > top_resto:
-        new_records += f"\nВав! Новий рекорд в залі ретсорану! Був {top_resto} {top_resto_date}, а тепер {total_resto}"
-
+        delivery_record_data = [str(int(total_delivery)), zvit_date.strftime('%m/%d/%Y')]
+        update_total_records(delivery_record_data, 'Доставка')
+    if top_resto.get('total') and total_resto > top_resto.get('total'):
+        new_records += f"\nВав! Новий рекорд в залі ретсорану!" \
+                       f" Був {top_resto.get('total')} {top_resto.get('date')}, а тепер {total_resto}"
+        resto_record_data = [str(int(total_resto)), zvit_date.strftime('%m/%d/%Y')]
+        update_total_records(resto_record_data, 'Зал')
     if total > 50000:
         congrats = f"\n\nYa perdolive"
     elif total > 45000:

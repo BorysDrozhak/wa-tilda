@@ -173,3 +173,6 @@ Bolt Total = 2
 Готівка в касі: 11807.36
 
 '''
+
+resto_record_data = {'name': 'Зал', 'total': 31845, 'date': '26.12.2022'}
+delivery_record_data = {'name': 'Доставка', 'total': 42560, 'date': '31.12.2022'}

@@ -39,3 +39,42 @@ def get_previous_date_total(date):
     if not previous_week_total:
         return
     return previous_week_total.value
+
+
+def update_total_records(data, record_name):
+    try:
+        gc = gspread.service_account(GC_CREDS)
+        sh = gc.open('wa-achievements')
+        wks = sh.worksheet('wa-records')
+    except:
+        return
+
+    existing_row = wks.find(record_name)
+
+    try:
+        col_to_update = 2
+        for d in data:
+            wks.update_cell(existing_row.row, col_to_update, d)
+            col_to_update += 1
+    except Exception as e:
+        print(e)
+
+
+def get_records():
+    try:
+        gc = gspread.service_account(GC_CREDS)
+        sh = gc.open('wa-achievements')
+        wks = sh.worksheet('wa-records')
+    except:
+        return {}, {}
+
+    data = wks.get_all_records()
+    resto_data, delivery_data = {}, {}
+
+    for record in data:
+        if record.get('name') == 'Зал':
+            resto_data = record
+        elif record.get('name') == 'Доставка':
+            delivery_data = record
+
+    return delivery_data, resto_data
