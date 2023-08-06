@@ -70,6 +70,7 @@ def get_records():
 
     data = wks.get_all_records()
     resto_data, delivery_data = {}, {}
+    print(data)
 
     for record in data:
         if record.get('name') == 'Зал':
