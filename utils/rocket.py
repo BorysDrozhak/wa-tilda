@@ -168,6 +168,7 @@ def parse_total_kassa(text, env):
 
     new_records = ""
     top_delivery, top_resto = get_records()
+    print(top_resto)
 
     if top_delivery.get('total') and total_delivery > top_delivery.get('total'):
         new_records += (

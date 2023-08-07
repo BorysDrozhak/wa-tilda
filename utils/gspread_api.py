@@ -44,7 +44,7 @@ def get_previous_date_total(date):
 def update_total_records(data, record_name):
     try:
         gc = gspread.service_account(GC_CREDS)
-        sh = gc.open('wa-achievements')
+        sh = gc.open('wa-accounting')
         wks = sh.worksheet('wa-records')
     except:
         return
@@ -63,7 +63,7 @@ def update_total_records(data, record_name):
 def get_records():
     try:
         gc = gspread.service_account(GC_CREDS)
-        sh = gc.open('wa-achievements')
+        sh = gc.open('wa-accounting')
         wks = sh.worksheet('wa-records')
     except:
         return {}, {}
