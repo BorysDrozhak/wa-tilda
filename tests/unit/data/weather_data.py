@@ -1,22 +1,22 @@
 example_weather_1 = [
     {
             'time': '9:00',
-            'weather_desc': 'Cloudy',
-            'feels': '8'
+            'weather_desc': 'broken clouds: 51-84%',
+            'feels': '8°C'
     },
     {
             'time': '13:00',
-            'weather_desc': 'Sunny',
-            'feels': '12'
+            'weather_desc': 'clear sky',
+            'feels': '17°C'
     },
     {
             'time': '17:00',
-            'weather_desc': 'Sunny',
-            'feels': '10'
+            'weather_desc': 'clear sky',
+            'feels': '10°C'
     }
 ]
 
-expected_weather_string = '''9:00☁️ 8C
-13:00☀️ 12C
-17:00☀️ 10C
+expected_weather_string = '''9:00☁️ 8°C
+13:00☀️ 17°C
+17:00☀️ 10°C
 '''
