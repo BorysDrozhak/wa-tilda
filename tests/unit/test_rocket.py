@@ -5,7 +5,7 @@ from tests.unit.data.rocket_order_examples import (example1, example_total1,
                                                    example_total2,
                                                    example_total3, resto_record_data, delivery_record_data)
 from utils.rocket import parse_rocket_fmt, parse_total_kassa
-from utils.weather import get_whether_forecast
+from utils.weather_cli import get_whether_forecast
 
 
 def test_example1():

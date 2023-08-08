@@ -18,7 +18,7 @@ from utils.tilda import parse_order
 from utils.poll_data import POLLS, BUTTONS
 from utils.filters import filter_generate, filter_cancel
 from utils.states import state_obj
-from utils.weather import save_weather
+from utils.weather_cli import save_weather
 from utils.telethon_operations import get_messages, bot_respond, start_jobs
 
 waiters_channel = "-1001792566598"

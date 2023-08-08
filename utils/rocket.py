@@ -4,7 +4,7 @@ import datetime
 import dateutil.parser as dparser
 
 from utils.gspread_api import add_history, get_previous_date_total, get_records, update_total_records
-from utils.weather import get_whether_forecast
+from utils.weather_cli import get_whether_forecast
 from const import (
 DELIVERY_NET_RATE,
 DAILY_SPEND,

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from tests.unit.data.weather_data import example_weather_1, expected_weather_string
-from utils.weather import get_whether_forecast, DailyWeather
+from utils.weather_cli import get_whether_forecast, DailyWeather
 
 
 def test_weather_data():
