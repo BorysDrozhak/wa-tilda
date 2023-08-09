@@ -1,7 +1,7 @@
 example_weather_1 = [
     {
             'time': '9:00',
-            'weather_desc': 'broken clouds: 51-84%',
+            'weather_desc': 'broken clouds',
             'feels': '8°C'
     },
     {

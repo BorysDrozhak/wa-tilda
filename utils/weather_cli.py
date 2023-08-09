@@ -3,7 +3,6 @@ import datetime
 from weather import Weather
 
 weather_smiles = {
-    'overcast clouds': '🌥️',
     'clear sky': '☀️',
     'thunderstorm with light rain': '⛈️',
     'thunderstorm with rain': '⛈️',
@@ -56,9 +55,9 @@ weather_smiles = {
     'squalls': '😶‍🌫️',
     'tornado': '😶‍🌫️',
     'few clouds: 11-25%': '🌤️',
-    'scattered clouds: 25-50%': '🌥️',
-    'broken clouds: 51-84%': '☁️',
-    'overcast clouds: 85-100%': '☁️',
+    'scattered clouds': '🌥️',
+    'broken clouds': '☁️',
+    'overcast clouds': '☁️',
 }
 
 
@@ -81,7 +80,7 @@ def get_weather():
 
 def save_weather():
     start = datetime.time(9, 0, 0)
-    end = datetime.time(22, 0, 0)
+    end = datetime.time(23, 00, 0)
     now = datetime.datetime.now().time()
     if not now > start or not now < end:
         return
@@ -90,7 +89,7 @@ def save_weather():
         return
 
     current_time = datetime.datetime.now()
-    time = f"{current_time.hour}:{current_time.minute}"
+    time = current_time.strftime('%H:%M')
     if not any(w['time'] == time for w in daily_weather.weather_data):
         daily_weather.weather_data.append({
             'time': time,
