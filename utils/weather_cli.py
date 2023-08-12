@@ -54,7 +54,7 @@ weather_smiles = {
     'volcanic ash': '😶‍🌫️',
     'squalls': '😶‍🌫️',
     'tornado': '😶‍🌫️',
-    'few clouds: 11-25%': '🌤️',
+    'few clouds': '🌤️',
     'scattered clouds': '🌥️',
     'broken clouds': '☁️',
     'overcast clouds': '☁️',
