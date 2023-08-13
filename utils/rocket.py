@@ -171,36 +171,36 @@ def parse_total_kassa(text, env):
     new_records = ""
     delivery_records_dict, resto_records_dict = get_records()
     print(resto_records_dict)
-    resto_records_total, delivery_records_total = 0, 0
+    top_resto_record, top_delivery_record = 0, 0
     if delivery_records_dict.get('total') and resto_records_dict.get('total'):
-        resto_records_total = int(resto_records_dict.get('total'))
-        delivery_records_total = int(delivery_records_dict.get('total'))
+        top_resto_record = int(resto_records_dict.get('total'))
+        top_delivery_record = int(delivery_records_dict.get('total'))
 
-    if delivery_records_total != 0 and total_delivery > delivery_records_total:
+    if top_delivery_record != 0 and total_delivery > top_delivery_record:
         new_records += (
             f"\nВав! Новий рекорд на доставці! "
-            f"Був {delivery_records_total} {delivery_records_dict.get('date')}, а тепер {total_delivery}"
+            f"Був {top_delivery_record} {delivery_records_dict.get('date')}, а тепер {total_delivery}"
         )
         delivery_record_data = [str(int(total_delivery)), zvit_date.strftime('%m/%d/%Y')]
         update_total_records(delivery_record_data, 'Доставка')
-        delivery_records_total = total_delivery
-    if resto_records_total != 0 and total_resto > resto_records_total:
+        top_delivery_record = total_delivery
+    if top_resto_record != 0 and total_resto > top_resto_record:
         new_records += f"\nВав! Новий рекорд в залі ретсорану!" \
-                       f" Був {resto_records_total} {resto_records_dict.get('date')}, а тепер {total_resto}"
+                       f" Був {top_resto_record} {resto_records_dict.get('date')}, а тепер {total_resto}"
         resto_record_data = [str(int(total_resto)), zvit_date.strftime('%m/%d/%Y')]
         update_total_records(resto_record_data, 'Зал')
-        resto_records_total = total_resto
+        top_resto_record = total_resto
 
-    is_almost_new_delivery_record = total_delivery >= delivery_records_total - (PERCENTAGE_THRESHOLD * total_delivery)
-    is_almost_new_resto_record = total_resto >= resto_records_total - (PERCENTAGE_THRESHOLD * total_resto)
+    is_almost_new_delivery_record = total_delivery >= top_delivery_record - (PERCENTAGE_THRESHOLD * total_delivery)
+    is_almost_new_resto_record = total_resto >= top_resto_record - (PERCENTAGE_THRESHOLD * total_resto)
     if not new_records and resto_records_dict and is_almost_new_resto_record:
-        bills = int((resto_records_total - total_resto) / AVERAGE_BILL_AMOUNT)
+        bills = int((top_resto_record - total_resto) / AVERAGE_BILL_AMOUNT)
         new_records += f"\nДо рекорду в залі ресторану недотягнули." \
-                       f"Досі рекорд {resto_records_total}, якби мали ще {bills} чека - то мали б новий"
+                       f"Досі рекорд {top_resto_record}, якби мали ще {bills} чека - то мали б новий"
     if not new_records and delivery_records_dict and is_almost_new_delivery_record:
-        bills = int((delivery_records_total - total_delivery) / AVERAGE_BILL_AMOUNT)
+        bills = int((top_delivery_record - total_delivery) / AVERAGE_BILL_AMOUNT)
         new_records += f"\nДо рекорду на доставці недотягнули." \
-                       f"Досі рекорд {delivery_records_total}, якби мали ще {bills} чека - то мали б новий"
+                       f"Досі рекорд {top_delivery_record}, якби мали ще {bills} чека - то мали б новий"
     if total > 50000:
         congrats = f"\n\nYa perdolive"
     elif total > 45000:
