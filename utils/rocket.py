@@ -176,7 +176,7 @@ def parse_total_kassa(text, env):
         top_resto_record = int(resto_records_dict.get('total'))
         top_delivery_record = int(delivery_records_dict.get('total'))
 
-    if top_delivery_record != 0 and total_delivery > top_delivery_record:
+    if top_delivery_record != 0 and int(total_delivery) > top_delivery_record:
         new_records += (
             f"\nВав! Новий рекорд на доставці! "
             f"Був {top_delivery_record} {delivery_records_dict.get('date')}, а тепер {total_delivery}"
@@ -184,7 +184,7 @@ def parse_total_kassa(text, env):
         delivery_record_data = [str(int(total_delivery)), zvit_date.strftime('%m/%d/%Y')]
         update_total_records(delivery_record_data, 'Доставка')
         top_delivery_record = total_delivery
-    if top_resto_record != 0 and total_resto > top_resto_record:
+    if top_resto_record != 0 and int(total_resto) > top_resto_record:
         new_records += f"\nВав! Новий рекорд в залі ретсорану!" \
                        f" Був {top_resto_record} {resto_records_dict.get('date')}, а тепер {total_resto}"
         resto_record_data = [str(int(total_resto)), zvit_date.strftime('%m/%d/%Y')]
