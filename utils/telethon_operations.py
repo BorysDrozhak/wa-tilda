@@ -46,11 +46,15 @@ async def add_member(username, channels):
     if not client:
         return
 
-    for channel in channels:
-        user_to_add = await client.get_input_entity(username)
-        print(user_to_add)
+    user_to_add = await client.get_input_entity(username)
+    print(user_to_add)
+    if not user_to_add:
+        return
 
+    for channel in channels:
+        channel_entity = await client.get_entity(channel)
         try:
-            await client(InviteToChannelRequest(channel, [user_to_add]))
+            res = await client(InviteToChannelRequest(channel_entity, [user_to_add]))
+            print(res)
         except Exception as e:
             print(e)

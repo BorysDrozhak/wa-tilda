@@ -83,7 +83,7 @@ def get_records():
 def add_user_data(data):
     try:
         gc = gspread.service_account(GC_CREDS)
-        sh = gc.open('wa-onboarding')
+        sh = gc.open('wa-accounting')
         wks = sh.worksheet('wa-users')
     except:
         return
