@@ -79,3 +79,13 @@ def get_records():
             delivery_data = record
 
     return delivery_data, resto_data
+
+def add_user_data(data):
+    try:
+        gc = gspread.service_account(GC_CREDS)
+        sh = gc.open('wa-accounting')
+        wks = sh.worksheet('wa-users')
+    except:
+        return
+
+    return wks.append_row(data)

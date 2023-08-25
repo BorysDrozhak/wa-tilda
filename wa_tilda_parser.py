@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import enum
 import asyncio
 import datetime
 import getpass
@@ -11,7 +11,7 @@ from retry import retry
 
 import telegram
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import Filters, MessageFilter, MessageHandler, Updater, CommandHandler
+from telegram.ext import Filters, MessageFilter, MessageHandler, Updater, CommandHandler, ConversationHandler
 
 from utils.rocket import parse_rocket, parse_total_kassa
 from utils.tilda import parse_order
@@ -19,7 +19,8 @@ from utils.poll_data import POLLS, BUTTONS
 from utils.filters import filter_generate, filter_cancel
 from utils.states import state_obj
 from utils.weather_cli import save_weather
-from utils.telethon_operations import get_messages, bot_respond, start_jobs
+from utils.telethon_operations import get_messages, bot_respond, start_jobs, add_member
+from utils.gspread_api import add_user_data
 
 waiters_channel = "-1001792566598"
 site_orders_channel = "-1001353838635"
@@ -262,7 +263,9 @@ filter_zvit = FilterZvit()
 
 class FilterKasa(MessageFilter):
     def filter(self, message):
-        text = message.text.lower()
+        text = ''
+        if message.text:
+            text = message.text.lower()
         return "каса" in text and not "202" in text
 
 
@@ -351,6 +354,9 @@ def callback_last_order_alarm(context):
             )
 
 
+def callback_onboarding_monthly(context):
+    return
+
 #  create queue for daily running jobs
 def run_jobs(update, context):
     chat_id = update.message.chat_id
@@ -370,6 +376,13 @@ def run_jobs(update, context):
         callback_daily_stakeholders,
         time=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone("Europe/Kiev")),
         days=(0, 1, 2, 3, 4),
+        context=chat_id,
+        name=str(chat_id),
+    )
+    context.job_queue.run_monthly(
+        callback_onboarding_monthly,
+        when=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone("Europe/Kiev")),
+        day=5,
         context=chat_id,
         name=str(chat_id),
     )
@@ -394,6 +407,164 @@ cancel_poll_handler = MessageHandler(
     poll_cancel,
 )
 dispatcher.add_handler(cancel_poll_handler)
+
+# Define conversation states
+USERNAME, DATE, ROLE = range(3)
+
+
+class Roles(enum.Enum):
+    waiter = 'офіціант'
+    chef = 'кухар'
+    bartender = 'бармен'
+    admin = 'адмін'
+
+
+class Channels(enum.Enum):
+    operations_channel = -1001719165729
+    cash_flow_channel = -1001658828551
+    site_orders_channel = -1001353838635
+    wa_bar_channel = -1001749242642
+    wa_kitchen_channel = -1001230684288
+    wa_resto_hall_channel = -1001796662118
+    wa_payment_of_bills_channel = -1001981228751
+    wa_announcement_channel = -1001798929013
+
+
+CHANNELS_BY_ROLE = {
+    Roles.chef.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.site_orders_channel.value,
+        Channels.wa_kitchen_channel.value,
+        Channels.wa_announcement_channel.value,
+    ],
+    Roles.waiter.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.site_orders_channel.value,
+        Channels.wa_announcement_channel.value,
+        Channels.wa_resto_hall_channel,
+    ],
+    Roles.bartender.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.site_orders_channel.value,
+        Channels.wa_bar_channel.value,
+        Channels.wa_announcement_channel.value,
+        Channels.wa_resto_hall_channel,
+    ],
+    Roles.admin.value: [
+        Channels.operations_channel.value,
+        Channels.cash_flow_channel.value,
+        Channels.site_orders_channel.value,
+        Channels.wa_payment_of_bills_channel.value,
+        Channels.wa_announcement_channel.value,
+        Channels.wa_kitchen_channel.value,
+        Channels.wa_bar_channel.value,
+        Channels.wa_resto_hall_channel,
+    ],
+}
+
+ONBOARDING_LINKS = {
+    'офіціант': '',
+    'кухар': '',
+    'бармен': '',
+    'адмін': '',
+}
+
+
+def start_adding(update, context):
+    reply_keyboard = [['Cancel']]
+    update.message.reply_text(
+        'Будь ласка додайте нового працівника\n\n'
+        'Username:',
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+    )
+    return USERNAME
+
+
+def collect_username(update, context):
+    context.user_data['username'] = update.message.text
+    reply_keyboard = [['Cancel']]
+    update.message.reply_text(
+        'Дата у форматі dd-mm-YYYY:',
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+    )
+    return DATE
+
+
+def collect_date(update, context):
+    context.user_data['date'] = update.message.text
+    reply_keyboard = [['Cancel']]
+    update.message.reply_text(
+        'Роль:',
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+    )
+    return ROLE
+
+
+def collect_role(update, context):
+    context.user_data['role'] = update.message.text
+
+    # Get the collected user information
+    user_info = {
+        'username': context.user_data['username'],
+        'role': context.user_data['role'],
+        'date': context.user_data['date']
+    }
+
+    if user_info.get('username') and not user_info.get('username').startswith('@'):
+        user_info['username'] = f'@{user_info.get("username")}'
+
+    add_members(user_info, update, context)
+
+    return ConversationHandler.END
+
+
+def onboarding_message(user_info, context):
+    link = ONBOARDING_LINKS.get(user_info.get('role'))
+    context.bot.send_message(
+        chat_id=operations_channel, text=f'Велком в команду ВА 🤗️️️️️️, {user_info.get("username")}\n'
+                                         f'Це канал Оперейшнс, тут ми оговорюємо всі питання операційки команди. Ось наш онбордінг документ, який ми тримаємо оновленим, і завжди раді доповнити. Розкажите, чи було цікаво. ну і, успіхів в команді!\n'
+                                         f'{link}'
+    )
+
+
+def add_members(user_info, update, context):
+    role = user_info.get('role').lower()
+    channels_to_add = CHANNELS_BY_ROLE.get(role)
+    user_data = [
+        *user_info.values(),
+        'false',
+    ]
+    try:
+        loop.run_until_complete(add_member(user_info['username'], channels_to_add))
+    except Exception as e:
+        print(e)
+        update.message.reply_text('Упс!\nЩось пішло не так(\nСпробуйте ще раз')
+    else:
+        add_user_data(user_data)
+        update.message.reply_text('Інформація про працівника успішно збережена!')
+        onboarding_message(user_info, context)
+
+
+def cancel(update, context):
+    update.message.reply_text('Operation cancelled.')
+    return ConversationHandler.END
+
+
+conv_handler = ConversationHandler(
+    entry_points=[CommandHandler('add', start_adding)],
+    states={
+        USERNAME: [MessageHandler(Filters.text, collect_username)],
+        DATE: [MessageHandler(Filters.text, collect_date)],
+        ROLE: [MessageHandler(Filters.text, collect_role)]
+    },
+    fallbacks=[CommandHandler('cancel', cancel)]
+)
+
+# Add the conversation handler to the dispatcher
+dispatcher.add_handler(conv_handler)
 
 
 # just logging messages recieved
