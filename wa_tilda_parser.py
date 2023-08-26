@@ -443,7 +443,7 @@ CHANNELS_BY_ROLE = {
         Channels.cash_flow_channel.value,
         Channels.site_orders_channel.value,
         Channels.wa_announcement_channel.value,
-        Channels.wa_resto_hall_channel,
+        Channels.wa_resto_hall_channel.value,
     ],
     Roles.bartender.value: [
         Channels.operations_channel.value,
@@ -451,7 +451,7 @@ CHANNELS_BY_ROLE = {
         Channels.site_orders_channel.value,
         Channels.wa_bar_channel.value,
         Channels.wa_announcement_channel.value,
-        Channels.wa_resto_hall_channel,
+        Channels.wa_resto_hall_channel.value,
     ],
     Roles.admin.value: [
         Channels.operations_channel.value,
@@ -461,7 +461,7 @@ CHANNELS_BY_ROLE = {
         Channels.wa_announcement_channel.value,
         Channels.wa_kitchen_channel.value,
         Channels.wa_bar_channel.value,
-        Channels.wa_resto_hall_channel,
+        Channels.wa_resto_hall_channel.value,
     ],
 }
 
@@ -522,11 +522,15 @@ def collect_role(update, context):
 
 
 def onboarding_message(user_info, context):
-    link = ONBOARDING_LINKS.get(user_info.get('role'))
+    role = user_info.get('role').lower()
+    link = ONBOARDING_LINKS.get(role)
     context.bot.send_message(
-        chat_id=operations_channel, text=f'Велком в команду ВА 🤗️️️️️️, {user_info.get("username")}\n'
-                                         f'Це канал Оперейшнс, тут ми оговорюємо всі питання операційки команди. Ось наш онбордінг документ, який ми тримаємо оновленим, і завжди раді доповнити. Розкажите, чи було цікаво. ну і, успіхів в команді!\n'
-                                         f'{link}'
+        chat_id=operations_channel, text=f'{user_info.get("username")}, Велком в команду ВА!\n 🤗️️️️️️\n\n'
+                                         f'Це канал Оперейшнс, тут ми\n оговорюємо всі питання операційки команди.\n '
+                                         f'Ось наш онбордінг документ, який\n ми тримаємо оновленим, і завжди раді\n '
+                                         f'доповнити.\n'
+                                         f'{link}\n\n'
+                                         f' Розкажите, чи було цікаво. ну і,\n успіхів в команді!\n'
     )
 
 
