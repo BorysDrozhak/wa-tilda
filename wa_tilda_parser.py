@@ -239,7 +239,7 @@ Bolt Total =
 
 class FilterOrder(MessageFilter):
     def filter(self, message):
-        return "Заказ #" in message.text if message.text else False
+        return "Заказ №" in message.text if message.text else False
 
 
 filter_order = FilterOrder()

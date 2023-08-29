@@ -89,8 +89,8 @@ def parse_order(text):
     promocode = None
     paid = None
 
-    order_block = text.split("Данные плательщика:")[0]
-    add_block = text.split("Дополнительные данные:")
+    order_block = text.split("Информация о покупателе:")[0]
+    add_block = text.split("Дополнительная информация:")
     if len(add_block) > 1:
         add_block = add_block[1]
     ## utm
@@ -105,8 +105,8 @@ def parse_order(text):
 
     client_block = (
         text
-        .split("Данные плательщика:")[1]
-        .split("Дополнительные данные")[0]
+        .split("Информация о покупателе:")[1]
+        .split("Дополнительная информация")[0]
     )
 
     other = []
@@ -147,6 +147,8 @@ def parse_order(text):
                 client_nocall = 'NO CALL'
         elif param == 'Fast_order':
             fast_order = 'FAST ORDER'
+        elif param == 'Delivery':
+            continue
         else:
             other += line
     if not other:
@@ -158,10 +160,10 @@ def parse_order(text):
     result_order_block_for_client = ''
     for line in order_block.split("\n"):
         order = re.findall(r"(\d+\.) (.+)", line)
-        if "Курʼєром " in line or "Самовивiз" in line:
+        if "Курєром" in line or "Курʼєром" in line or "Самовивiз" in line:
             delivery_zone = line
             continue
-        elif "Сумма оплаты" in line:
+        elif "Сумма платежа" in line:
             total_order_price = line.split(": ")[1]
             continue
         elif "Платежная система" in line or "Код платежа" in line:
