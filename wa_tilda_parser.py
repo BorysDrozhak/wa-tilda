@@ -20,7 +20,7 @@ from utils.filters import filter_generate, filter_cancel
 from utils.states import state_obj
 from utils.weather_cli import save_weather
 from utils.telethon_operations import get_messages, bot_respond, start_jobs, add_member
-from utils.gspread_api import add_user_data
+from utils.gspread_api import add_user_data, update_empl_trial
 
 waiters_channel = "-1001792566598"
 site_orders_channel = "-1001353838635"
@@ -355,7 +355,8 @@ def callback_last_order_alarm(context):
 
 
 def callback_onboarding_monthly(context):
-    return
+    update_empl_trial()
+
 
 #  create queue for daily running jobs
 def run_jobs(update, context):
