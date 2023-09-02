@@ -496,8 +496,9 @@ def collect_username(update, context):
 def collect_date(update, context):
     context.user_data['date'] = update.message.text
     reply_keyboard = [['Cancel']]
+    roles = [r.value for r in Roles]
     update.message.reply_text(
-        'Роль:',
+        f'Роль ({", ".join(roles)}):',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     return ROLE
@@ -564,7 +565,7 @@ def cancel(update, context):
 
 
 conv_handler = ConversationHandler(
-    entry_points=[CommandHandler('add', start_adding)],
+    entry_points=[CommandHandler('add_employee', start_adding)],
     states={
         USERNAME: [MessageHandler(Filters.text, collect_username)],
         DATE: [MessageHandler(Filters.text, collect_date)],
