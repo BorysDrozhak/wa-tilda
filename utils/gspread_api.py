@@ -104,12 +104,10 @@ def update_empl_trial():
     existing_rows = wks.get_all_records()
     today = datetime.date.today()
     col_to_update = 4
-    print(existing_rows)
     try:
         for row in existing_rows:
-            print(row)
             dateObj = datetime.datetime.strptime(row.get('date'), '%d-%m-%Y').date()
-            if not row.get('trial') and dateObj <= today - datetime.timedelta(days=30):
+            if row.get('trial') != 'true' and dateObj <= today - datetime.timedelta(days=30):
                 row_to_update = wks.find(row.get('username'))
                 print(row_to_update.row)
                 wks.update_cell(row_to_update.row, col_to_update, 'true')

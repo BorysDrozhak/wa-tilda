@@ -383,7 +383,7 @@ def run_jobs(update, context):
     context.job_queue.run_monthly(
         callback_onboarding_monthly,
         when=datetime.time(hour=9, minute=00, tzinfo=pytz.timezone("Europe/Kiev")),
-        day=7,
+        day=8,
         context=chat_id,
         name='Onboarding',
     )
