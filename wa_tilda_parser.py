@@ -21,6 +21,7 @@ from utils.states import state_obj
 from utils.weather_cli import save_weather
 from utils.telethon_operations import get_messages, bot_respond, start_jobs, add_member
 from utils.gspread_api import add_user_data, update_empl_trial
+from utils.graphs import build_graphs
 
 waiters_channel = "-1001792566598"
 site_orders_channel = "-1001353838635"
@@ -157,6 +158,11 @@ def send_parse_zvit(update, context):
         text=text,
         # parse_mode='HTML'
     )
+    try:
+        build_graphs(context, chat_id)
+    except Exception as e:
+        print(e)
+
     tips = 0.0
     total_resto = 0.0
     for line in text.split("\n"):

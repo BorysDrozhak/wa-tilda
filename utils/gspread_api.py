@@ -113,3 +113,15 @@ def update_empl_trial():
                 wks.update_cell(row_to_update.row, col_to_update, 'true')
     except Exception as e:
         print(e)
+
+
+def get_all_records(table_name):
+    try:
+        gc = gspread.service_account(GC_CREDS)
+        sh = gc.open('wa-accounting')
+        wks = sh.worksheet(table_name)
+    except:
+        return
+
+    records = wks.get_all_records()
+    return records

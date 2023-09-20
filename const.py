@@ -8,3 +8,16 @@ DAILY_SPEND = 9000
 TOTAL_NET_RATE = 0.01
 AVERAGE_BILL_AMOUNT = 800
 PERCENTAGE_THRESHOLD = 0.15
+MONDAY = 0
+WEEK = 7
+WA_HISTORY_TABLE = 'wa-history'
+THREE_MONTH = 90
+NAME_OF_DAYS = {
+    0: 'Понеділок',
+    1: 'Вівторок',
+    2: 'Середу',
+    3: 'Четвер',
+    4: "П'ятницю",
+    5: 'Суботу',
+    6: 'Неділю'
+}
