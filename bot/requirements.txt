@@ -1,0 +1,13 @@
+pytest
+pytest-mock
+python-statemachine
+python-open-weather
+Telethon==1.27.0
+gspread
+python-dateutil
+retry==0.9.2
+python-telegram-bot==20.04
+pytz==2023.3.post1
+matplotlib==3.7.2
+boto3
+urllib3==1.26.6

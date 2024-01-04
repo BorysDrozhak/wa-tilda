@@ -1,0 +1,23 @@
+DELIVERY_NET_RATE = 0.42
+RESTO_CASH_NET_RATE = 0.36
+RESTO_CARD_NET_RATE = 0.385
+SHAKE_TO_PAY_NET_RATE = 0.385
+BOLT_DELIVEY_NET_RATE = 0.68
+GLOVO_DELIVEY_NET_RATE = 0.73
+DAILY_SPEND = 9000
+TOTAL_NET_RATE = 0.01
+AVERAGE_BILL_AMOUNT = 800
+PERCENTAGE_THRESHOLD = 0.15
+MONDAY = 0
+WEEK = 7
+WA_HISTORY_TABLE = 'wa-history-reserved'
+FOURTH_MONTH = 120
+NAME_OF_DAYS = {
+    0: 'Понеділок',
+    1: 'Вівторок',
+    2: 'Середу',
+    3: 'Четвер',
+    4: "П'ятницю",
+    5: 'Суботу',
+    6: 'Неділю'
+}
