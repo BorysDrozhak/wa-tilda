@@ -2,7 +2,6 @@ import os
 import shutil
 from telethon import TelegramClient
 
-
 class TelethonClient:
     API_ID = os.environ.get('TELETHON_API_ID')
     API_HASH = os.environ.get('TELETHON_API_HASH')

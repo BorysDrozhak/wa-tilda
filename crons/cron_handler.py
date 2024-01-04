@@ -131,7 +131,7 @@ def weekly_reminder(event=None, context=None):
 
 def callback_onboarding_monthly(event=None, context=None):
     today = datetime.date.today()
-    offset = today - datetime.timedelta(days=90)
+    offset = today - datetime.timedelta(days=32)
 
     gc_creds = create_creds_json(CREDENTIALS_DICT)
     update_empl_trial(creds=gc_creds)
@@ -147,5 +147,3 @@ def callback_onboarding_monthly(event=None, context=None):
         text=f"@bd_xz_b\nПрацівники: {', '.join(employees_success_trial)} успішно завершили випробувальний термін"
     ))
 
-
-callback_onboarding_monthly()

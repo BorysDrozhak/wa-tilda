@@ -6,6 +6,7 @@ __pycache__/
 
 # C extensions
 *.so
+.env
 
 # Distribution / packaging
 .Python
@@ -59,6 +60,7 @@ venv/
 # Serverless directories
 .serverless
 layers
+serverless.yml
 
 anon.session
 

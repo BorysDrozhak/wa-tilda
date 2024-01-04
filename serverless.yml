@@ -91,13 +91,6 @@ functions:
           path: webhook
           method: post
 
-  forecast_for_today:
-    handler: forecast_cron.daily_forecast
-    module: bot
-    events:
-      - schedule:
-          rate: cron(0 11 * * ? *)
-
 
   bartender_reminder:
     handler: cron_handler.callback_bartenders
@@ -142,7 +135,7 @@ functions:
           rate: cron(0 10 ? * FRI *)
 
   forecast:
-    handler: forecast.get_today_forecast
+    handler: forecast.get_tomorrow_forecast
     module: kasa_forecasting
 
 

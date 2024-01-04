@@ -68,6 +68,19 @@ async def build_graphs(contex, chat_id):
             filtered_dates.append(formatted_date)
             filtered_totals.append(int(entry['Total']))
 
+    try:
+        data = get_all_records(WA_HISTORY_TABLE)
+        response = invoke_function_in_lambda({'sales_data': data})
+        print(response)
+        forecast_response = json.loads(response['Payload'].read())
+        if forecast_response:
+            filtered_totals.append(forecast_response.get('forecast').get('Total'))
+            filtered_dates.append(forecast_response.get('forecast').get('Date'))
+
+    except Exception as e:
+        print(e)
+        forecast_response = None
+
     plt.figure(figsize=(10, 6))
     plt.plot(
         filtered_dates,
@@ -82,6 +95,7 @@ async def build_graphs(contex, chat_id):
     plt.grid(True)
 
     averages = get_average_data(records, fourth_months_ago)
+
     if len(filtered_dates) > len(averages):
         filtered_dates.pop()
     elif len(filtered_dates) < len(averages):
@@ -104,6 +118,9 @@ async def build_graphs(contex, chat_id):
         label='Середня каса за тиждень (минулий рік)',
         linewidth=0.5
     )
+    if forecast_response and len(filtered_dates) != filtered_totals:
+        filtered_totals.pop()
+
     x = np.arange(len(filtered_dates))
     coefficients = np.polyfit(x, filtered_totals, 1)
     trendline = np.poly1d(coefficients)
@@ -121,20 +138,4 @@ async def build_graphs(contex, chat_id):
     plt.savefig(buffer, format='png')
     buffer.seek(0)
 
-    try:
-        data = get_all_records(WA_HISTORY_TABLE)
-        response = invoke_function_in_lambda(data)
-        print(response)
-        response_payload = json.loads(response['Payload'].read())
-        print(response_payload)
-        if response_payload:
-            await contex.bot.send_message(
-                chat_id=chat_id,
-                text=f'Прогноз каси на сьогодні: {response_payload.get("forecast_total")}'
-            )
-    except Exception as e:
-        print(e)
-
     await contex.bot.send_photo(chat_id=chat_id, photo=InputFile(buffer, filename='graph.png'))
-
-

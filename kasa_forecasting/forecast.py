@@ -37,10 +37,6 @@ def get_tomorrow_forecast(event, context):
         'forecast': {
             'Total': forecast_total,
             'Date': tomorrow.date().strftime('%d-%m')
-        },
-        'previous_year': {
-            'Total': last_year_data['Total'].values[0],
-            'Date': pd.to_datetime(last_year_data['Date'].values[0]).strftime('%d-%m')
         }
     }
 

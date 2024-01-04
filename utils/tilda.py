@@ -92,18 +92,18 @@ def parse_order(text):
     paid = None
 
     order_block = text.split("Час замовлення:")[0]
-    # add_block = text.split("Дополнительная информация:")
-    # if len(add_block) > 1:
-    #     add_block = add_block[1]
-    # ## utm
-    # for line in add_block.split('\n'):
-    #     if "UTM source:" in line:
-    #         utm = line
-    #         break
-    # if utm:
-    #     utm = f'----\n{utm}'
-    # else:
-    #     utm = ''
+    add_block = text.split("Дополнительная информация:")
+    if len(add_block) > 1:
+        add_block = add_block[1]
+    ## utm
+    for line in add_block.split('\n'):
+        if "UTM source:" in line:
+            utm = line
+            break
+    if utm:
+        utm = f'----\n{utm}'
+    else:
+        utm = ''
 
     client_block = (
         text
