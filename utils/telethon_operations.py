@@ -7,7 +7,7 @@ from telethon.tl.functions.channels import InviteToChannelRequest
 from services.telethon_client import telethon_client
 
 wa_bot_id = 1655066222
-tildaforms_id = 265299531
+choice_id = 1118387138
 
 MESSAGE = '''Подякуйте собі, за те які ви є
 І подякуйте людям навколо вас, цей тиждень. Просто. За те що вони є
@@ -34,12 +34,17 @@ async def get_messages(channel_id):
 
 def bot_respond(messages):
     for message in messages:
-        if message.message and message.from_id.user_id == wa_bot_id:
-            return True
-        if message.message and message.from_id.user_id == tildaforms_id:
+        if not order_confirmed(message.message) and message.from_id.user_id == choice_id:
             local_time = datetime.now()
             utc_time = local_time.replace(tzinfo=timezone.utc)
             return message.date + timedelta(minutes=5) > utc_time
+
+
+def order_confirmed(order_text):
+    if '🔔 >>>> ✅ undefined' not in order_text:
+        return False
+
+    return True
 
 
 async def add_member(username, channels):

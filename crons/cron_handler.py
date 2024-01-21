@@ -112,7 +112,7 @@ def callback_last_order_alarm(event, context):
         if not bot_respond(messages):
             loop.run_until_complete(application.bot.send_message(
                 chat_id=site_orders_channel,
-                text="@bd_xz_b @yanochka_s_s @serhiy_yurta \nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
+                text="@bd_xz_b @yanochka_s_s @violetochkalllll\nАгов! Замовлення вже більше 5 хвилин висить без обробки!"
             ))
 
 
