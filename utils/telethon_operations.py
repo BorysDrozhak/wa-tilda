@@ -39,7 +39,9 @@ def bot_respond(messages):
             utc_time = local_time.replace(tzinfo=timezone.utc)
             return message.date + timedelta(minutes=5) > utc_time
         else:
-            return True
+            continue
+
+    return True
 
 
 def order_confirmed(order_text):
