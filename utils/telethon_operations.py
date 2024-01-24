@@ -45,7 +45,7 @@ def bot_respond(messages):
 
 
 def order_confirmed(order_text):
-    if '🔔 >>>> ✅ undefined' not in order_text:
+    if '🔔 >>>> ✅ undefined' not in order_text or '🔔 >>>> 🚫 undefined' not in order_text:
         return False
 
     return True
