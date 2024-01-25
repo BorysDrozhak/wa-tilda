@@ -21,7 +21,7 @@ async def get_messages(channel_id):
         channel_entity = await client.get_entity(channel_id)
         posts = await client(GetHistoryRequest(
             peer=channel_entity,
-            limit=15,
+            limit=10,
             offset_date=None,
             offset_id=0,
             max_id=0,
