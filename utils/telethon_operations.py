@@ -21,7 +21,7 @@ async def get_messages(channel_id):
         channel_entity = await client.get_entity(channel_id)
         posts = await client(GetHistoryRequest(
             peer=channel_entity,
-            limit=10,
+            limit=15,
             offset_date=None,
             offset_id=0,
             max_id=0,
@@ -45,10 +45,12 @@ def bot_respond(messages):
 
 
 def order_confirmed(order_text):
-    if '🔔 >>>> ✅ undefined' not in order_text or '🔔 >>>> 🚫 undefined' not in order_text:
-        return False
+    if '🔔 >>>> ✅ undefined' in order_text:
+        return True
+    elif '🔔 >>>> 🚫 undefined' in order_text:
+        return True
 
-    return True
+    return False
 
 
 async def add_member(username, channels):
