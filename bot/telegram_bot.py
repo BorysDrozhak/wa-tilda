@@ -14,7 +14,7 @@ from telegram.ext import MessageHandler, CommandHandler, ConversationHandler, Ap
 from telegram.ext.filters import MessageFilter, TEXT, COMMAND
 
 from utils.rocket import parse_rocket, parse_total_kassa
-from utils.tilda import parse_order
+from utils.choice import parse_order
 from utils.telethon_operations import add_member
 from utils.gspread_api import add_user_data
 from utils.graphs import build_graphs
@@ -67,29 +67,24 @@ async def send_parsed_order(update, context):
     err = ""
     text_for_client = ""
     try:
-        text, text_for_client = parse_order(update.message.text)
+        text_for_client = parse_order(update.message.text)
     except Exception as e:
         err = e
         text = str(traceback.format_exc())
         text = text + "\n\n Borys will have a look ;)"
-    if str(chat_id) not in channels and env == "prod":
-        text = re.sub(r"^https?:\/\/.*[\r\n]*", "", text, flags=re.MULTILINE)
-        await context.bot.send_message(
-            chat_id=site_orders_channel,
-            text=text,
-        )
+    # if str(chat_id) not in channels and env == "prod":
+    #     text = re.sub(r"^https?:\/\/.*[\r\n]*", "", text, flags=re.MULTILINE)
+    #     await context.bot.send_message(
+    #         chat_id=site_orders_channel,
+    #         text=text,
+    #     )
     if err != "":
         # if error happen, make it string and send it
-        text = text
         text_for_client = ""
     else:
         # removing https links when sending them to main chat
         pass
 
-    await context.bot.send_message(
-        chat_id=chat_id,
-        text=text,
-    )
     if text_for_client:
         await context.bot.send_message(
             chat_id=chat_id,
@@ -222,7 +217,7 @@ Bolt Total =
 
 class FilterOrder(MessageFilter):
     def filter(self, message):
-        return "Заказ №" in message.text if message.text else False
+        return "🚲🚲🚲Нове" in message.text if message.text else False
 
 
 filter_order = FilterOrder()
