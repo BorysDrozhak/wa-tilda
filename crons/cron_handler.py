@@ -130,20 +130,15 @@ def weekly_reminder(event=None, context=None):
 
 
 def callback_onboarding_monthly(event=None, context=None):
-    today = datetime.date.today()
-    offset = today - datetime.timedelta(days=32)
-
     gc_creds = create_creds_json(CREDENTIALS_DICT)
-    update_empl_trial(creds=gc_creds)
-    employees = get_employees(creds=gc_creds)
+    employees = update_empl_trial(creds=gc_creds)
     employees_success_trial = []
     for empl in employees:
-        dateObj = datetime.datetime.strptime(empl.get('date'), '%d-%m-%Y').date()
-        if empl.get('trial') == ('TRUE' or 'true') and offset <= dateObj <= today:
-            employees_success_trial.append(f"{empl.get('username')}: {empl.get('role')}")
+        employees_success_trial.append(f"{empl.get('username')}: {empl.get('role')}")
 
-    loop.run_until_complete(application.bot.send_message(
-        chat_id=stakeholders_channel,
-        text=f"@bd_xz_b\nПрацівники: {', '.join(employees_success_trial)} успішно завершили випробувальний термін"
-    ))
+    if employees_success_trial:
+        loop.run_until_complete(application.bot.send_message(
+            chat_id=stakeholders_channel,
+            text=f"@bd_xz_b\nПрацівники: {', '.join(employees_success_trial)} успішно завершили випробувальний термін"
+        ))
 

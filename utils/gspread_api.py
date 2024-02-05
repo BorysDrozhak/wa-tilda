@@ -135,18 +135,25 @@ def update_empl_trial(creds=None):
     except:
         return
 
-    existing_rows = wks.get_all_records()
+    existing_rows = wks.findall('false')
+    notify = []
+    records = wks.get_values(f'A{existing_rows[0].row}:{existing_rows[-1].address}')
+    headers = wks.row_values(1)
+    records = form_response(headers, records)
     today = datetime.date.today()
     col_to_update = 4
     try:
-        for row in existing_rows:
+        for row in records:
             dateObj = datetime.datetime.strptime(row.get('date'), '%d-%m-%Y').date()
             if row.get('trial') != 'true' and dateObj <= today - datetime.timedelta(days=30):
                 row_to_update = wks.find(row.get('username'))
+                notify.append(row.get('username'))
                 print(row_to_update.row)
                 wks.update_cell(row_to_update.row, col_to_update, 'true')
     except Exception as e:
         print(e)
+
+    return notify
 
 
 def get_employees(creds=None):
