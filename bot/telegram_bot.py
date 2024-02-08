@@ -279,21 +279,18 @@ class Channels(enum.Enum):
 CHANNELS_BY_ROLE = {
     Roles.chef.value: [
         Channels.operations_channel.value,
-        Channels.cash_flow_channel.value,
         Channels.site_orders_channel.value,
         Channels.wa_kitchen_channel.value,
         Channels.wa_announcement_channel.value,
     ],
     Roles.waiter.value: [
         Channels.operations_channel.value,
-        Channels.cash_flow_channel.value,
         Channels.site_orders_channel.value,
         Channels.wa_announcement_channel.value,
         Channels.wa_resto_hall_channel.value,
     ],
     Roles.bartender.value: [
         Channels.operations_channel.value,
-        Channels.cash_flow_channel.value,
         Channels.site_orders_channel.value,
         Channels.wa_bar_channel.value,
         Channels.wa_announcement_channel.value,
