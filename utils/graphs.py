@@ -12,7 +12,7 @@ from .weather_cli import kyiv_timezone
 from const import WA_HISTORY_TABLE, FOURTH_MONTH, NAME_OF_DAYS, MONDAY, WEEK
 
 
-def get_average_data(dataset, fourth_months_ago):
+def get_average_data(dataset, fourth_months_ago, weeks=None):
     weekly_totals = {}
     weekly_counts = {}
 
@@ -20,6 +20,8 @@ def get_average_data(dataset, fourth_months_ago):
         date_obj = datetime.strptime(entry['Date'], '%m/%d/%Y').date()
         if date_obj > fourth_months_ago.date():
             week_number = date_obj.isocalendar()[1]
+            if weeks and week_number not in weeks:
+                continue
             if week_number not in weekly_totals:
                 weekly_totals[week_number] = int(entry['Total'])
                 weekly_counts[week_number] = 1
@@ -32,8 +34,9 @@ def get_average_data(dataset, fourth_months_ago):
         weekly_averages[week] = int(total / weekly_counts.get(week))
 
     averages = list(weekly_averages.values())
+    weeks = list(weekly_averages.keys())
 
-    return averages
+    return averages, weeks
 
 
 async def build_graphs(contex, chat_id):
@@ -94,7 +97,7 @@ async def build_graphs(contex, chat_id):
     plt.title('Тендеція каси за останні чотири місяці')
     plt.grid(True)
 
-    averages = get_average_data(records, fourth_months_ago)
+    averages, weeks = get_average_data(records, fourth_months_ago)
 
     if len(filtered_dates) > len(averages):
         filtered_dates.pop()
@@ -102,9 +105,10 @@ async def build_graphs(contex, chat_id):
         averages.pop()
 
     plt.plot(filtered_dates, averages, marker='x', linestyle='--', label='Середня каса за тиждень')
-    previous_year_averages = get_average_data(
+    previous_year_averages, _ = get_average_data(
         previous_year_records,
         four_months_ago_previous_year,
+        weeks
     )
 
     if len(filtered_dates) < len(previous_year_averages):
