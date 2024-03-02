@@ -54,8 +54,13 @@ BARTENDER_REMINDER_TEXT = '''
 Переглянути склад на залишок молока❗
 '''
 
+BLOGGERS_REMINDER_TEXT = '''
+Написати @bd_xz_b список кооперацій по 
+бартеру з блогерами на поточний і
+наступний тиждень
+'''
 
-#  run job for daily poll
+
 def callback_daily(event, context):
     todays_date = datetime.datetime.now(tz=kyiv_timezone).date()
     day_in_year = todays_date.day
@@ -75,6 +80,13 @@ def callback_bartenders(event, context):
     loop.run_until_complete(application.bot.send_message(
         wa_bar_channel,
         text=BARTENDER_REMINDER_TEXT
+    ))
+
+
+def callback_bloggers(event, context):
+    loop.run_until_complete(application.bot.send_message(
+        wa_bar_channel,
+        text=BLOGGERS_REMINDER_TEXT
     ))
 
 
