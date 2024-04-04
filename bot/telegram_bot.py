@@ -384,7 +384,7 @@ async def start_adding(update, context):
     reply_keyboard = [['Cancel']]
     await update.message.reply_text(
         'Будь ласка додайте нового працівника\n\n'
-        'Username:',
+        'Username або ж Phone (якщо відсутній нік):',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     return USERNAME
@@ -397,7 +397,7 @@ async def collect_username(update, context):
     context.user_data['username'] = update.message.text
     reply_keyboard = [['Cancel']]
     await update.message.reply_text(
-        'Дата у форматі dd-mm-YYYY:',
+        'Дата у форматі dd-mm-YYYY',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     return DATE
@@ -422,8 +422,9 @@ async def collect_role(update, context):
         'role': context.user_data['role'],
         'date': context.user_data['date']
     }
-
-    if user_info.get('username') and not user_info.get('username').startswith('@'):
+    if user_info.get('username') and user_info.get('username').startswith('+'):
+        user_info['username'] = f'@{user_info.get("username")}'
+    elif user_info.get('username') and not user_info.get('username').startswith('@'):
         user_info['username'] = f'@{user_info.get("username")}'
 
     await add_members(user_info, update, context)
