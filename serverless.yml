@@ -145,6 +145,10 @@ functions:
     handler: forecast.get_tomorrow_forecast
     module: kasa_forecasting
 
+  get_user_phone:
+    handler: cron_handler.get_user_phone
+    module: crons
+
 
 plugins:
   - serverless-python-requirements

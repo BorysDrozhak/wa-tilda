@@ -1,3 +1,4 @@
+import json
 import asyncio
 import datetime
 import getpass
@@ -5,6 +6,7 @@ import getpass
 from telegram import ReplyKeyboardRemove
 from telegram.ext import ApplicationBuilder
 
+from services.telethon_client import telethon_client
 from utils.weather_cli import save_weather, kyiv_timezone
 from utils.gspread_api import update_empl_trial, create_creds_json, CREDENTIALS_DICT, get_employees
 from utils.telethon_operations import bot_respond, get_messages, send_messages
@@ -154,3 +156,20 @@ def callback_onboarding_monthly(event=None, context=None):
             text=f"@bd_xz_b\nПрацівники: {', '.join(employees_success_trial)} успішно завершили випробувальний термін"
         ))
 
+
+def get_user_phone(event, context):
+    return asyncio.get_event_loop().run_until_complete(get_user_entity(event, context))
+
+
+async def get_user_entity(event, context):
+    client = await telethon_client.get_client()
+    user = event.get('username')
+    if not user and not client:
+        return {
+            'statusCode': 404,
+            'body': json.dumps({"message": 'Missing sales data'})
+        }
+    user = await client.get_entity(user)
+    return {
+        'phone': user.phone
+    }

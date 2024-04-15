@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta, timezone
 
 from telethon.tl import functions
@@ -82,3 +83,17 @@ async def send_messages(users):
                     message=MESSAGE))
             except Exception as e:
                 print(e)
+
+
+async def get_user_entity(event, context):
+    client = await telethon_client.get_client()
+    user = event.get('username')
+    if not user and not client:
+        return {
+            'statusCode': 404,
+            'body': json.dumps({"message": 'Missing sales data'})
+        }
+    user = await client.get_entity(user)
+    return {
+        'phone': user.phone
+    }
