@@ -155,21 +155,3 @@ def callback_onboarding_monthly(event=None, context=None):
             chat_id=stakeholders_channel,
             text=f"@bd_xz_b\nПрацівники: {', '.join(employees_success_trial)} успішно завершили випробувальний термін"
         ))
-
-
-def get_user_phone(event, context):
-    return asyncio.get_event_loop().run_until_complete(get_user_entity(event, context))
-
-
-async def get_user_entity(event, context):
-    client = await telethon_client.get_client()
-    user = event.get('username')
-    if not user and not client:
-        return {
-            'statusCode': 404,
-            'body': json.dumps({"message": 'Missing sales data'})
-        }
-    user = await client.get_entity(user)
-    return {
-        'phone': user.phone
-    }

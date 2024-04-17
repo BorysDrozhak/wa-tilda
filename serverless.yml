@@ -146,8 +146,8 @@ functions:
     module: kasa_forecasting
 
   get_user_phone:
-    handler: cron_handler.get_user_phone
-    module: crons
+    handler: telegram_bot.get_user_phone
+    module: bot
 
 
 plugins:

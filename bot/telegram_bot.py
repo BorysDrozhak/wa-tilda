@@ -13,6 +13,7 @@ from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove
 from telegram.ext import MessageHandler, CommandHandler, ConversationHandler, ApplicationBuilder
 from telegram.ext.filters import MessageFilter, TEXT, COMMAND
 
+from services.telethon_client import telethon_client
 from utils.rocket import parse_rocket, parse_total_kassa
 from utils.choice import parse_order
 from utils.telethon_operations import add_member
@@ -544,6 +545,25 @@ async def main(event, context):
             'statusCode': 500,
             'body': 'Failure'
         }
+
+
+def get_user_phone(event, context):
+    return asyncio.get_event_loop().run_until_complete(get_user_entity(event, context))
+
+
+async def get_user_entity(event, context):
+    client = await telethon_client.get_client()
+    user = event.get('username')
+    if not user and not client:
+        return {
+            'statusCode': 404,
+            'body': json.dumps({"message": 'Missing sales data'})
+        }
+    user = await client.get_entity(user)
+    return {
+        'phone': user.phone
+    }
+
 
 if __name__ == '__main__' and env == 'dev':
     application.add_handler(order_handler)
