@@ -423,7 +423,7 @@ async def collect_role(update, context):
         'date': context.user_data['date']
     }
     if user_info.get('username') and user_info.get('username').startswith('+'):
-        user_info['username'] = f'@{user_info.get("username")}'
+        user_info['username'] = f'{user_info.get("username")}'
     elif user_info.get('username') and not user_info.get('username').startswith('@'):
         user_info['username'] = f'@{user_info.get("username")}'
 
